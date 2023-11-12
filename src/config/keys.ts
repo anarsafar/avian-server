@@ -22,13 +22,9 @@ const SERVER_PORT = process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : 
 let SERVER_URL = '';
 let FRONT_END_URL = '';
 
-// ! Nodemailer Config
-const USER = process.env.MAIL_USERNAME || '';
-const CLIENT_ID = process.env.OAUTH_CLIENTID || '';
-const CLIENT_SECRET = process.env.OAUTH_CLIENT_SECRET || '';
-const REFRESH_TOKEN = process.env.OAUTH_REFRESH_TOKEN || '';
-const REDIRECT_URL = process.env.REDIRECT_URL || 'https://developers.google.com/oauthplayground';
-const EMAIL_SERVICE = process.env.EMAIL_SERVICE || 'Gmail';
+// ! SendGrid Key
+const SENDGRID_KEY = process.env.SENDGRID_KEY || '';
+const SENDGRID_MAIL = process.env.SENDGRID_MAIL || '';
 
 if (NODE_ENV === 'development') {
     SERVER_URL = 'http://localhost:8080';
@@ -73,15 +69,11 @@ export const config = {
         refreshSecretKey: JWT_REFRESH_SECRET,
         accessSecretKey: JWT_ACCESS_SECRET
     },
-    nodemailer: {
-        user: USER,
-        clientId: CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
-        refreshToken: REFRESH_TOKEN,
-        emailService: EMAIL_SERVICE,
-        redirectURL: REDIRECT_URL
-    },
     nodeEnv: NODE_ENV,
+    sendGrid: {
+        sendGridKey: SENDGRID_KEY,
+        sendGridMail: SENDGRID_MAIL
+    },
     applicationURLs: {
         serverURL: SERVER_URL,
         frontendURL: FRONT_END_URL

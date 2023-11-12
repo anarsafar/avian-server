@@ -1,9 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import ejs from 'ejs';
 import path from 'path';
-import { Transporter } from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
 import { config } from '../config/keys';
-import mailConfig from '../config/nodemailer.config';
 
 export enum EmailType {
     signup = 'Signup',
@@ -15,16 +15,17 @@ async function sendEmail(email: string, confirmationCode: string, type: EmailTyp
     try {
         const templatePath: string = path.join(__dirname, '../templates/', 'email.ejs');
         const htmlContent = await ejs.renderFile(templatePath, { type, confirmationCode, date: Date.now() });
-        const transporter = (await mailConfig()) as Transporter;
+
+        sgMail.setApiKey(config.sendGrid.sendGridKey);
 
         const mailOptions = {
-            from: config.nodemailer.user,
+            from: config.sendGrid.sendGridMail,
             to: email,
             subject: `${type === EmailType.reset ? 'Recover' : 'Confirm'}  your account`,
             html: htmlContent
         };
 
-        await transporter.sendMail(mailOptions);
+        await sgMail.send(mailOptions);
     } catch (error) {
         console.error(`Error sending email to ${email}`, error);
         throw error;
