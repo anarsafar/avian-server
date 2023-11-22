@@ -19,18 +19,6 @@ export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResp
 
         let existingUser = await User.findOne({ 'authInfo.email': email });
 
-        if (existingUser && !existingUser.authInfo.confirmed) {
-            existingUser.authInfo.confirmationCode = generateConfirmation(6);
-            existingUser.authInfo.password = await bcrypt.hash(password, 10);
-            existingUser.authInfo.confirmationTimestamp = new Date();
-
-            existingUser.markModified('authInfo');
-            await existingUser.save();
-
-            await sendEmail(email, existingUser.authInfo.confirmationCode, EmailType.signup);
-            return res.status(200).json({ message: 'Check email inbox for new confirmation' });
-        }
-
         if (existingUser) {
             return res.status(409).json({ error: 'Email already exists' });
         }
