@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import ejs from 'ejs';
 import path from 'path';
 import sgMail from '@sendgrid/mail';

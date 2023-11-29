@@ -7,13 +7,13 @@ import generateConfirmation from '../../../utils/generateConfirmation';
 import sendEmail, { EmailType } from '../../../services/sendEmail.service';
 import { config } from '../../../config/keys';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/generateTokens';
-import { LoginValidate, SignInValidate } from './local.validate';
+import { LoginValidate, SignupValidate } from './local.validate';
 import addToBlacklist, { TokenType } from '../../../services/blacklist.service';
 import MessageResponse from '../../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../../interfaces/ErrorResponses';
 import { JwtInterface } from '../../../interfaces/JwtInterface';
 
-export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResponse, SignInValidate>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
+export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResponse, SignupValidate>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
     try {
         const { email, password, name } = req.body;
 

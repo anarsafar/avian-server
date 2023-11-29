@@ -141,6 +141,11 @@ const UserSchema = new Schema(
         },
         resetPassword: {
             type: Object,
+            default: {
+                confirmationCode: null,
+                confirmed: false,
+                confirmationTimestamp: null
+            },
             properties: {
                 confirmationCode: {
                     type: String,

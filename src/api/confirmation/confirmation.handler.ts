@@ -1,72 +1,73 @@
 import { NextFunction, Request, Response } from 'express';
 import User from '../../models/User.model';
-import { ConfrimationValidate } from './confirmation.validate';
+import { ConfirmationBase, ConfrimationValidate } from './confirmation.validate';
 import MessageResponse from '../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../interfaces/ErrorResponses';
-import { EmailValidate } from '../resetPassword/reset.validate';
 import generateConfirmation from '../../utils/generateConfirmation';
 import sendEmail, { EmailType } from '../../services/sendEmail.service';
 
 export const confirmUser = async (req: Request<{}, MessageResponse | GeneralErrorResponse, ConfrimationValidate>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
-    const { confirmationCode, confirmationType } = req.body;
+    const { confirmationCode, confirmationType, email } = req.body;
 
     const searchQuery = confirmationType === 'password' ? 'resetPassword' : 'authInfo';
-    const message = confirmationType === 'password' ? 'Reset password' : 'Email';
 
     try {
-        const existingUser = await User.findOne({ [`${searchQuery}.confirmationCode`]: confirmationCode });
+        const existingUser = await User.findOne({ 'authInfo.email': email });
 
         if (existingUser) {
             const confirmed = existingUser[searchQuery].confirmed;
 
             if (confirmed) {
-                return res.status(409).json({ error: `${message} already confirmed.` });
+                return res.status(409).json({ error: `Email already confirmed` });
             } else {
-                const confirmationTimestamp = existingUser[searchQuery].confirmationTimestamp;
-                const currentTime = new Date();
-                const timeDifference = currentTime.getTime() - confirmationTimestamp.getTime();
-
-                if (timeDifference > 5 * 60 * 1000) {
-                    return res.status(422).json({ error: 'Confirmation code has expired.' });
+                if (confirmationCode !== existingUser[searchQuery].confirmationCode) {
+                    return res.status(400).json({ error: 'Please provide correct confirmation code' });
+                } else {
+                    const confirmationTimestamp = existingUser[searchQuery].confirmationTimestamp;
+                    const currentTime = new Date();
+                    const timeDifference = currentTime.getTime() - confirmationTimestamp.getTime();
+                    if (timeDifference > 5 * 60 * 1000) {
+                        return res.status(422).json({ error: 'Confirmation code has expired' });
+                    } else {
+                        existingUser[searchQuery].confirmed = true;
+                        existingUser.markModified(`${searchQuery}.confirmed`);
+                        await existingUser.save();
+                        return res.status(200).json({ message: `Email confirmed successfully` });
+                    }
                 }
-
-                existingUser[searchQuery].confirmed = true;
-                existingUser.markModified(`${searchQuery}.confirmed`);
-                await existingUser.save();
-
-                return res.status(200).json({ message: `${message} confirmed successfully.` });
             }
         } else {
-            res.status(422).json({ error: 'Please provide correct confirmation code' });
+            res.status(422).json({ error: 'User does not exist' });
         }
     } catch (error) {
         next(error);
     }
 };
 
-export const resendEmail = async (req: Request<{}, MessageResponse | GeneralErrorResponse, EmailValidate>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
-    const { email } = req.body;
+export const resendEmail = async (req: Request<{}, MessageResponse | GeneralErrorResponse, ConfirmationBase>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
+    const { email, confirmationType } = req.body;
+    const searchQuery = confirmationType === 'password' ? 'resetPassword' : 'authInfo';
 
     try {
         let existingUser = await User.findOne({ 'authInfo.email': email });
 
         if (existingUser) {
-            const confirmed = existingUser.authInfo.confirmed;
+            const confirmed = existingUser[searchQuery]?.confirmed;
 
             if (confirmed) {
                 return res.status(409).json({ error: `Email already confirmed.` });
             } else {
-                existingUser.authInfo.confirmationCode = generateConfirmation(6);
-                existingUser.authInfo.confirmationTimestamp = new Date();
+                existingUser[searchQuery].confirmationCode = generateConfirmation(6);
+                existingUser[searchQuery].confirmationTimestamp = new Date();
 
-                existingUser.markModified('authInfo');
+                existingUser.markModified(searchQuery);
                 await existingUser.save();
 
-                await sendEmail(email, existingUser.authInfo.confirmationCode, EmailType.signup);
+                await sendEmail(email, existingUser[searchQuery].confirmationCode, confirmationType === 'email' ? EmailType.signup : EmailType.reset);
                 return res.status(200).json({ message: 'Check email inbox for new confirmation' });
             }
         } else {
-            res.status(422).json({ error: 'Please provide correct confirmation code' });
+            res.status(422).json({ error: 'User does not exist' });
         }
     } catch (error) {
         next(error);
@@ -74,22 +75,23 @@ export const resendEmail = async (req: Request<{}, MessageResponse | GeneralErro
 };
 
 export const getExpiration = async (
-    req: Request<{}, { expiration: string } | GeneralErrorResponse, EmailValidate>,
-    res: Response<{ expiration: string } | GeneralErrorResponse>,
+    req: Request<{}, { confirmationTimestamp: string } | GeneralErrorResponse, ConfirmationBase>,
+    res: Response<{ confirmationTimestamp: string } | GeneralErrorResponse>,
     next: NextFunction
 ) => {
-    const { email } = req.body;
+    const { email, confirmationType } = req.body;
+    const searchQuery = confirmationType === 'password' ? 'resetPassword' : 'authInfo';
 
     try {
         let existingUser = await User.findOne({ 'authInfo.email': email });
 
         if (existingUser) {
-            const confirmed = existingUser.authInfo.confirmed;
+            const confirmed = existingUser[searchQuery].confirmed;
 
             if (confirmed) {
                 return res.status(409).json({ error: `Email already confirmed.` });
             } else {
-                return res.status(200).json({ expiration: existingUser.authInfo.confirmationTimestamp });
+                return res.status(200).json({ confirmationTimestamp: existingUser[searchQuery].confirmationTimestamp });
             }
         } else {
             res.status(422).json({ error: 'User does not exists' });

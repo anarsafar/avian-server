@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 
-import { PasswordValidate } from '../api/resetPassword/reset.validate';
 import User from '../models/User.model';
 
 interface ResetResult {
@@ -10,14 +9,6 @@ interface ResetResult {
 
 const resetPasswordService = async (password: string, confirmPassword: string, email: string): Promise<ResetResult> => {
     let result: ResetResult = {};
-
-    const data = {
-        password,
-        confirmPassword,
-        email
-    };
-
-    PasswordValidate.parse(data);
 
     const existingUser = await User.findOne({ 'authInfo.email': email });
 
@@ -33,10 +24,8 @@ const resetPasswordService = async (password: string, confirmPassword: string, e
         } else {
             existingUser.authInfo.password = await bcrypt.hash(password, 10);
 
-            existingUser.resetPassword = {
-                confirmationCode: '',
-                confirmed: false
-            };
+            existingUser.resetPassword.confirmed = false;
+            existingUser.resetPassword.confirmationCode = '';
 
             existingUser.markModified(`authInfo`);
             existingUser.markModified(`resetPassword`);

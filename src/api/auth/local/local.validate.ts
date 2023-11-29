@@ -19,5 +19,12 @@ export const LoginValidate = z.object({
 });
 export type LoginValidate = z.infer<typeof LoginValidate>;
 
-export const SignInValidate = LoginValidate.extend({ name: z.string().trim().min(1, { message: 'Name is required.' }).min(3, 'Name must be at least 3 characters long') });
-export type SignInValidate = z.infer<typeof SignInValidate>;
+export const SignupValidate = LoginValidate.extend({
+    name: z.string().trim().min(1, { message: 'Name is required' }).min(3, 'Name must be at least 3 characters long'),
+    confirmPassword: z.string().trim().min(1, { message: 'confirm password is required' })
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword']
+});
+
+export type SignupValidate = z.infer<typeof SignupValidate>;
