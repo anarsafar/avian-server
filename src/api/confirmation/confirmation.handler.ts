@@ -44,7 +44,7 @@ export const confirmUser = async (req: Request<{}, MessageResponse | GeneralErro
     }
 };
 
-export const resendEmail = async (req: Request<{}, MessageResponse | GeneralErrorResponse, ConfirmationBase>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
+export const sendVerification = async (req: Request<{}, MessageResponse | GeneralErrorResponse, ConfirmationBase>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
     const { email, confirmationType } = req.body;
     const searchQuery = confirmationType === 'password' ? 'resetPassword' : 'authInfo';
 
