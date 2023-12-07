@@ -13,6 +13,7 @@ export const getUser: RequestHandler = async (req: Request, res: Response<UserIn
             .select('-authInfo.confirmationCode')
             .select('-authInfo.confirmed')
             .select('-authInfo.password')
+            .select('-authInfo.confirmationTimestamp')
             .select('-resetPassword')
             .then((user) => (user ? res.status(200).json(user) : res.status(404).json({ error: 'user not found' })))
             .catch((error) => next(error));
