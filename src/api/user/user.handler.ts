@@ -9,16 +9,24 @@ export const getUser: RequestHandler = async (req: Request, res: Response<UserIn
     const { userId } = req.user as { userId: string };
 
     try {
-        User.findById(userId)
-            .select('-authInfo.confirmationCode')
-            .select('-authInfo.confirmed')
-            .select('-authInfo.password')
-            .select('-authInfo.confirmationTimestamp')
-            .select('-resetPassword')
-            .then((user) => (user ? res.status(200).json(user) : res.status(404).json({ error: 'user not found' })))
-            .catch((error) => next(error));
-    } catch (error) {
-        next(error);
+        const socialUser = await User.findOne({ 'authInfo.providerId': userId });
+        if (socialUser) {
+            res.status(200).json(socialUser);
+        } else {
+            const user = await User.findById(userId)
+                .select('-authInfo.confirmationCode')
+                .select('-authInfo.confirmed')
+                .select('-authInfo.password')
+                .select('-authInfo.confirmationTimestamp')
+                .select('-resetPassword');
+            if (user) {
+                res.status(200).json(user);
+            } else {
+                res.status(404).json({ error: 'user not found' });
+            }
+        }
+    } catch (err) {
+        next(err);
     }
 };
 

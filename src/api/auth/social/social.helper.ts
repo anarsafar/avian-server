@@ -13,7 +13,6 @@ export enum SocialType {
 
 export const strategyHelper = async (profile: any, done: VerifyCallback, provider: SocialType) => {
     try {
-        console.log(profile);
         const user = await User.findOne({ 'authInfo.providerId': profile.id });
 
         if (!user) {
@@ -41,7 +40,7 @@ export const strategyHelper = async (profile: any, done: VerifyCallback, provide
 
 export const callbackHelper = async (user: any, err: Error, res: Response | any, next: NextFunction) => {
     if (!user) {
-        return res.status(401).json({ error: 'Social authentication failed' });
+        return res.redirect(`${config.applicationURLs.frontendURL}/auth/signin?error=Social authentication failed`);
     }
 
     if (err) {
@@ -52,5 +51,5 @@ export const callbackHelper = async (user: any, err: Error, res: Response | any,
     const refreshToken = await generateRefreshToken(user.authInfo.providerId);
 
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.nodeEnv === 'production', maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/' }); // 7 days
-    res.redirect(`${config.applicationURLs.frontendURL}/auth/login?accessToken=${accessToken}`);
+    res.redirect(`${config.applicationURLs.frontendURL}/auth/signin?accessToken=${accessToken}`);
 };

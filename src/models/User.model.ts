@@ -141,11 +141,6 @@ const UserSchema = new Schema(
         },
         resetPassword: {
             type: Object,
-            default: {
-                confirmationCode: null,
-                confirmed: false,
-                confirmationTimestamp: null
-            },
             properties: {
                 confirmationCode: {
                     type: String,
@@ -168,6 +163,17 @@ const UserSchema = new Schema(
         versionKey: false
     }
 );
+
+UserSchema.pre('save', function (next) {
+    if (this.authType === 'local' && !this.resetPassword) {
+        this.resetPassword = {
+            confirmationCode: null,
+            confirmed: false,
+            confirmationTimestamp: null
+        };
+    }
+    next();
+});
 
 const User = model<UserInterface & Document>('User', UserSchema);
 
