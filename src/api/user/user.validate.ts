@@ -17,7 +17,8 @@ export const UpdateUserValidate = z
             .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Invalid phone number')
             .default('')
             .optional(),
-        avatar: z.unknown().optional()
+        avatar: z.unknown().optional(),
+        darkMode: z.boolean().optional()
     })
     .refine((data) => !isEmpty(data), { message: 'Body can not be empty' });
 

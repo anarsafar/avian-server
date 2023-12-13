@@ -58,7 +58,11 @@ export const UserZodSchema = z.object({
             confirmed: z.boolean().default(false),
             confirmationTimestamp: z.date().optional()
         })
-        .optional()
+        .optional(),
+
+    preferences: z.object({
+        darkMode: z.boolean().default(false).optional()
+    })
 });
 
 export type UserInterface = z.infer<typeof UserZodSchema>;
@@ -155,6 +159,16 @@ const UserSchema = new Schema(
                 confirmationTimestamp: {
                     type: Date,
                     required: ['authType', 'local']
+                }
+            }
+        },
+        preferences: {
+            type: Object,
+            required: true,
+            default: {},
+            properties: {
+                darkMode: {
+                    type: Boolean
                 }
             }
         }

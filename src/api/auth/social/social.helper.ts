@@ -26,7 +26,8 @@ export const strategyHelper = async (profile: any, done: VerifyCallback, provide
                     name: profile.displayName,
                     bio: provider === 'github' ? profile._json.bio : '',
                     avatar: profile.photos[0].value
-                }
+                },
+                preferences: {}
             });
             await newUser.save();
             done(null, newUser);
@@ -47,8 +48,8 @@ export const callbackHelper = async (user: any, err: Error, res: Response | any,
         next(err);
     }
 
-    const accessToken = await generateAccessToken(user.authInfo.providerId);
-    const refreshToken = await generateRefreshToken(user.authInfo.providerId);
+    const accessToken = await generateAccessToken(user._id);
+    const refreshToken = await generateRefreshToken(user._id);
 
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.nodeEnv === 'production', maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/' }); // 7 days
     res.redirect(`${config.applicationURLs.frontendURL}/auth/signin?accessToken=${accessToken}`);

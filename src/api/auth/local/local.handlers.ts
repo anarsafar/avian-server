@@ -37,7 +37,8 @@ export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResp
             },
             userInfo: {
                 name
-            }
+            },
+            preferences: {}
         });
 
         await newUser.save();
@@ -101,7 +102,12 @@ export const logOut = async (req: Request, res: Response<MessageResponse | Gener
         }
 
         try {
-            res.clearCookie('refreshToken');
+            res.clearCookie('refreshToken', {
+                path: '/',
+                expires: new Date(0),
+                sameSite: 'none',
+                secure: true
+            });
         } catch (error) {
             return res.status(500).json({ error: 'Error clearing refresh token cookie' });
         }

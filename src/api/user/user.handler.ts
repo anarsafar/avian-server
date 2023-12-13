@@ -9,21 +9,17 @@ export const getUser: RequestHandler = async (req: Request, res: Response<UserIn
     const { userId } = req.user as { userId: string };
 
     try {
-        const socialUser = await User.findOne({ 'authInfo.providerId': userId });
-        if (socialUser) {
-            res.status(200).json(socialUser);
+        const user = await User.findById(userId)
+            .select('-authInfo.confirmationCode')
+            .select('-authInfo.confirmed')
+            .select('-authInfo.password')
+            .select('-authInfo.confirmationTimestamp')
+            .select('-resetPassword');
+
+        if (user) {
+            res.status(200).json(user);
         } else {
-            const user = await User.findById(userId)
-                .select('-authInfo.confirmationCode')
-                .select('-authInfo.confirmed')
-                .select('-authInfo.password')
-                .select('-authInfo.confirmationTimestamp')
-                .select('-resetPassword');
-            if (user) {
-                res.status(200).json(user);
-            } else {
-                res.status(404).json({ error: 'user not found' });
-            }
+            res.status(404).json({ error: 'user not found' });
         }
     } catch (err) {
         next(err);
@@ -38,6 +34,7 @@ export const updateUser: RequestHandler = async (
     try {
         const { userId } = req.user as { userId: string };
         const { file, body } = req;
+        const { darkMode, ...updateData } = body;
 
         let updatedUserInfo = {};
 
@@ -53,14 +50,19 @@ export const updateUser: RequestHandler = async (
             await uploadBytes(storageRef, file.buffer);
             const downloadURL = await getDownloadURL(storageRef);
 
-            updatedUserInfo = { ...body, avatar: downloadURL };
+            updatedUserInfo = { ...updateData, avatar: downloadURL };
         } else {
-            updatedUserInfo = { ...body };
+            updatedUserInfo = { ...updateData };
         }
 
         const existingUser = await User.findById(userId).select('-authInfo.confirmationCode').select('-authInfo.confirmed').select('-authInfo.password').select('-resetPassword');
 
         if (existingUser) {
+            if (darkMode !== undefined) {
+                existingUser.preferences.darkMode = darkMode;
+                existingUser.markModified('preferences');
+            }
+
             existingUser.userInfo = { ...existingUser?.userInfo, ...updatedUserInfo };
             existingUser.markModified('userInfo');
             await existingUser.save();
