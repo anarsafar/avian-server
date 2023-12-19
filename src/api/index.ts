@@ -7,6 +7,7 @@ import refreshRouter from './refresh/refresh.route';
 import resetPasswordRouter from './resetPassword/reset.route';
 import userRoute from './user/user.route';
 import socialRoute from './auth/social/social.route';
+import contactRoute from './contacts/contacts.route';
 
 const router: Router = express.Router();
 
@@ -22,5 +23,6 @@ router.use('/confirmation', confrimationRoute);
 router.use('/refresh', refreshRouter);
 router.use('/reset-password', resetPasswordRouter);
 router.use('/user', userRoute);
+router.use('/contacts', contactRoute);
 
 export default router;

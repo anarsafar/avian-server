@@ -55,8 +55,7 @@ export const updateUser: RequestHandler = async (
             updatedUserInfo = { ...updateData };
         }
 
-        const existingUser = await User.findById(userId).select('-authInfo.confirmationCode').select('-authInfo.confirmed').select('-authInfo.password').select('-resetPassword');
-
+        const existingUser = await User.findById(userId).select('-authInfo.confirmationCode').select('-authInfo.confirmed');
         if (existingUser) {
             if (darkMode !== undefined) {
                 existingUser.preferences.darkMode = darkMode;

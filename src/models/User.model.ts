@@ -1,6 +1,13 @@
 import { Document, Schema, model } from 'mongoose';
 import * as z from 'zod';
 
+const ContactSchema = z.object({
+    user: z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
+        message: 'Invalid ObjectId format'
+    }),
+    isBlocked: z.boolean().default(false)
+});
+
 const localAuthInfo = z.object({
     email: z
         .string()
@@ -62,7 +69,8 @@ export const UserZodSchema = z.object({
 
     preferences: z.object({
         darkMode: z.boolean().default(false).optional()
-    })
+    }),
+    contacts: z.array(ContactSchema)
 });
 
 export type UserInterface = z.infer<typeof UserZodSchema>;
@@ -171,7 +179,19 @@ const UserSchema = new Schema(
                     type: Boolean
                 }
             }
-        }
+        },
+        contacts: [
+            {
+                user: {
+                    type: String,
+                    required: true
+                },
+                isBlocked: {
+                    type: Boolean,
+                    default: false
+                }
+            }
+        ]
     },
     {
         versionKey: false
