@@ -12,6 +12,7 @@ import MessageResponse from './interfaces/MessageResponse';
 import * as middlewares from './middlewares';
 import api from './api';
 import strategies from './api/auth/social/social.strategies';
+import setCache from './middlewares/cache.middleware';
 
 const app = express();
 const corsOptions = {
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(setCache);
 
 app.set('view engine', 'ejs');
 app.set('templates', path.join(__dirname, 'templates'));
