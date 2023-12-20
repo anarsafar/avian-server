@@ -8,6 +8,8 @@ const ContactSchema = z.object({
     isBlocked: z.boolean().default(false)
 });
 
+export type ContactSchema = z.infer<typeof ContactSchema>;
+
 const localAuthInfo = z.object({
     email: z
         .string()
@@ -70,10 +72,12 @@ export const UserZodSchema = z.object({
     preferences: z.object({
         darkMode: z.boolean().default(false).optional()
     }),
+    online: z.boolean().default(false).optional(),
+    lastSeen: z.date().optional(),
     contacts: z.array(ContactSchema)
 });
 
-export type UserInterface = z.infer<typeof UserZodSchema>;
+export type UserInterface = z.infer<typeof UserZodSchema> & Document;
 
 const UserSchema = new Schema(
     {
@@ -180,16 +184,13 @@ const UserSchema = new Schema(
                 }
             }
         },
+        online: { type: Boolean, default: false },
+        lastSeen: { type: Date, default: Date.now },
         contacts: [
             {
-                user: {
-                    type: String,
-                    required: true
-                },
-                isBlocked: {
-                    type: Boolean,
-                    default: false
-                }
+                user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+                isBlocked: { type: Boolean, default: false },
+                _id: false
             }
         ]
     },

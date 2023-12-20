@@ -4,14 +4,13 @@ import { validateRequest } from '../../middlewares';
 import blacklisted from '../../middlewares/blacklist.middleware';
 import authenticateToken from '../../middlewares/jwt.middleware';
 
-import { addContact, deleteContact } from './contacts.handler';
-import { ValidateContact } from './contacts.valitate';
+import { addContact, blockOrDeleteContact, getContacts } from './contacts.handler';
+import { ValidateAction, ValidateContact } from './contacts.valitate';
 
 const contactRoute: Router = express.Router();
 
-// contactRoute.get('/', blacklisted, authenticateToken, validateRequest({ body: ContactValidate }), getContacts);
-// contactRoute.get('/contactInfo', blacklisted, authenticateToken, validateRequest({ body: ContactValidate }), getContactInfo);
+contactRoute.get('/', blacklisted, authenticateToken, getContacts);
 contactRoute.post('/', blacklisted, authenticateToken, validateRequest({ body: ValidateContact }), addContact);
-contactRoute.delete('/', blacklisted, authenticateToken, validateRequest({ body: ValidateContact }), deleteContact);
+contactRoute.post('/:contactId', blacklisted, authenticateToken, validateRequest({ body: ValidateAction }), blockOrDeleteContact);
 
 export default contactRoute;

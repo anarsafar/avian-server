@@ -22,3 +22,9 @@ export const ValidateContact = z
     });
 
 export type ValidateContact = z.infer<typeof ValidateContact>;
+
+export const ValidateAction = z.object({
+    action: z.union([z.literal('block'), z.literal('delete')])
+});
+
+export type ValidateAction = z.infer<typeof ValidateAction>;
