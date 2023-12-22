@@ -8,7 +8,15 @@ const isEmpty = (obj: object): boolean => {
 
 export const UpdateUserValidate = z
     .object({
-        name: z.string().trim().min(1, { message: 'Name is required.' }).min(3, 'Name must be at least 3 characters long').optional(),
+        name: z
+            .string()
+            .trim()
+            .min(1, { message: 'Name is required.' })
+            .min(3, 'Name must be at least 3 characters long')
+            .refine((value) => /^[A-Za-z]+$/.test(value), {
+                message: 'Must contain only letters'
+            })
+            .optional(),
         bio: z.string().trim().min(1, { message: 'Bio is required.' }).min(3, 'Bio must be at least 3 characters long').optional(),
         phone: z
             .string()
