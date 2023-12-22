@@ -8,22 +8,16 @@ import { ValidateContact } from './contacts.valitate';
 
 export const addContact = async (req: Request<{}, MessageResponse | GeneralErrorResponse, ValidateContact>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
     try {
-        const { email, providerId } = req.body;
+        const { contact } = req.body;
         const { userId } = req.user as { userId: string };
-
+        const searchQuery = contact.includes('@') ? 'authInfo.email' : 'authInfo.providerId';
         const existingUser = await User.findById(userId);
 
         if (!existingUser) {
             return res.status(404).json({ error: 'user not found' });
         }
 
-        let foundedContact: UserInterface | null;
-
-        if (email) {
-            foundedContact = await User.findOne({ 'authInfo.email': email });
-        } else {
-            foundedContact = await User.findOne({ 'authInfo.providerId': providerId });
-        }
+        let foundedContact: UserInterface | null = await User.findOne({ [searchQuery]: contact });
 
         if (!foundedContact || foundedContact === null) {
             return res.status(401).json({ error: 'Contact does not exist' });
