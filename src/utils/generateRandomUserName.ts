@@ -5,7 +5,7 @@ const chance = new Chance();
 
 export function generateRandumUserName(name: string): string {
     const passPhrase = chance.string({ casing: 'lower', symbols: false, length: 5, alpha: true });
-    const cleanedName = name.replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase();
+    const cleanedName = name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     const userName = `${cleanedName}_${passPhrase}`;
 
     return userName;

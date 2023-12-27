@@ -10,7 +10,7 @@ export const addContact = async (req: Request<{}, MessageResponse | GeneralError
     try {
         const { contact } = req.body;
         const { userId } = req.user as { userId: string };
-        const searchQuery = contact.includes('@') ? 'authInfo.email' : 'authInfo.providerId';
+        const searchQuery = contact.includes('@') ? 'authInfo.email' : 'userInfo.username';
         const existingUser = await User.findById(userId);
 
         if (!existingUser) {
@@ -51,7 +51,7 @@ export const getContacts = async (req: Request, res: Response<GeneralErrorRespon
 
         const user = await User.findById(userId).populate({
             path: 'contacts.user',
-            select: 'userInfo.name userInfo.avatar online lastSeen authInfo.email authInfo.providerId'
+            select: 'userInfo.name userInfo.avatar online lastSeen authInfo.email authInfo.providerId, userInfo.username'
         });
 
         if (!user) {
