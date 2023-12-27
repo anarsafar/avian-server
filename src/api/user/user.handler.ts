@@ -4,6 +4,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import User, { UserInterface } from '../../models/User.model';
 import { UpdateUserValidate } from './user.validate';
 import { GeneralErrorResponse } from '../../interfaces/ErrorResponses';
+import { isPassphraseUnique } from '../../utils/generateRandomUserName';
 
 export const getUser: RequestHandler = async (req: Request, res: Response<UserInterface | GeneralErrorResponse>, next: NextFunction) => {
     const { userId } = req.user as { userId: string };
@@ -34,9 +35,13 @@ export const updateUser: RequestHandler = async (
     try {
         const { userId } = req.user as { userId: string };
         const { file, body } = req;
-        const { darkMode, ...updateData } = body;
+        const { darkMode, username, ...updateData } = body;
 
         let updatedUserInfo = {};
+
+        if (username && !(await isPassphraseUnique(username))) {
+            res.status(409).json({ error: 'username already taken' });
+        }
 
         if (body && file) {
             UpdateUserValidate.parse({ ...body, avatar: file });

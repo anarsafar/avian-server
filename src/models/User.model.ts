@@ -60,7 +60,14 @@ export const UserZodSchema = z.object({
             .min(1, { message: 'Phone is required' })
             .regex(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Invalid phone number')
             .optional(),
-        avatar: z.string().optional()
+        avatar: z.string().optional(),
+        username: z
+            .string()
+            .trim()
+            .min(3, 'Username must be at least 3 characters long')
+            .refine((value) => /^[a-z0-9_]+$/.test(value), {
+                message: 'Username must contain only lowercase letters, numbers, and underscores.'
+            })
     }),
 
     resetPassword: z
@@ -159,6 +166,10 @@ const UserSchema = new Schema(
                 avatar: {
                     type: String,
                     trim: true
+                },
+                username: {
+                    type: String,
+                    required: true
                 }
             }
         },

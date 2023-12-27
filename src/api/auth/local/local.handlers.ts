@@ -12,6 +12,7 @@ import addToBlacklist, { TokenType } from '../../../services/blacklist.service';
 import MessageResponse from '../../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../../interfaces/ErrorResponses';
 import { JwtInterface } from '../../../interfaces/JwtInterface';
+import { generateRandumUserName, isPassphraseUnique } from '../../../utils/generateRandomUserName';
 
 export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResponse, SignupValidate>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
     try {
@@ -25,6 +26,11 @@ export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResp
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const confirmationCode = generateConfirmation(6);
+        let randomUsername = generateRandumUserName(name);
+
+        while (!(await isPassphraseUnique(randomUsername))) {
+            randomUsername = generateRandumUserName(name);
+        }
 
         const newUser = new User({
             authType: 'local',
@@ -36,7 +42,8 @@ export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResp
                 confirmationTimestamp: new Date()
             },
             userInfo: {
-                name
+                name,
+                username: randomUsername
             },
             preferences: {}
         });

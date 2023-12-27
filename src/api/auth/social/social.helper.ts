@@ -4,6 +4,7 @@ import { config } from '../../../config/keys';
 import User from '../../../models/User.model';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/generateTokens';
 import { VerifyCallback } from 'passport-google-oauth20';
+import { generateRandumUserName, isPassphraseUnique } from '../../../utils/generateRandomUserName';
 
 export enum SocialType {
     google = 'google',
@@ -14,6 +15,11 @@ export enum SocialType {
 export const strategyHelper = async (profile: any, done: VerifyCallback, provider: SocialType) => {
     try {
         const user = await User.findOne({ 'authInfo.providerId': profile.id });
+        let randomUsername = generateRandumUserName(profile.displayName);
+
+        while (!(await isPassphraseUnique(randomUsername))) {
+            randomUsername = generateRandumUserName(profile.displayName);
+        }
 
         if (!user) {
             const newUser = new User({
@@ -25,7 +31,8 @@ export const strategyHelper = async (profile: any, done: VerifyCallback, provide
                 userInfo: {
                     name: profile.displayName,
                     bio: provider === 'github' ? profile._json.bio : '',
-                    avatar: profile.photos[0].value
+                    avatar: profile.photos[0].value,
+                    username: randomUsername
                 },
                 preferences: {}
             });

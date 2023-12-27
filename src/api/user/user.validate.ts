@@ -26,7 +26,15 @@ export const UpdateUserValidate = z
             .default('')
             .optional(),
         avatar: z.unknown().optional(),
-        darkMode: z.boolean().optional()
+        darkMode: z.boolean().optional(),
+        username: z
+            .string()
+            .trim()
+            .min(3, 'Username must be at least 3 characters long')
+            .refine((value) => /^[a-z0-9_]+$/.test(value), {
+                message: 'Username must contain only lowercase letters, numbers, and underscores'
+            })
+            .optional()
     })
     .refine((data) => !isEmpty(data), { message: 'Body can not be empty' });
 
