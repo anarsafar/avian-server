@@ -4,7 +4,8 @@ import { config } from '../../../config/keys';
 import User from '../../../models/User.model';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/generateTokens';
 import { VerifyCallback } from 'passport-google-oauth20';
-import { generateRandumUserName, isPassphraseUnique } from '../../../utils/generateRandomUserName';
+import generateRandumUserName from '../../../utils/generateRandomUserName';
+import isPassphraseUnique from '../../../utils/isPassphraseUnique';
 
 export enum SocialType {
     google = 'google',

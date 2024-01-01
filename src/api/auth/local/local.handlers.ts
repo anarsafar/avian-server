@@ -12,7 +12,8 @@ import addToBlacklist, { TokenType } from '../../../services/blacklist.service';
 import MessageResponse from '../../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../../interfaces/ErrorResponses';
 import { JwtInterface } from '../../../interfaces/JwtInterface';
-import { generateRandumUserName, isPassphraseUnique } from '../../../utils/generateRandomUserName';
+import generateRandumUserName from '../../../utils/generateRandomUserName';
+import isPassphraseUnique from '../../../utils/isPassphraseUnique';
 
 export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResponse, SignupValidate>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
     try {

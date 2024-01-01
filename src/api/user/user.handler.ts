@@ -4,7 +4,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import User, { UserInterface } from '../../models/User.model';
 import { UpdateUserValidate } from './user.validate';
 import { GeneralErrorResponse } from '../../interfaces/ErrorResponses';
-import { isPassphraseUnique } from '../../utils/generateRandomUserName';
+import isPassphraseUnique from '../../utils/isPassphraseUnique';
 
 export const getUser: RequestHandler = async (req: Request, res: Response<UserInterface | GeneralErrorResponse>, next: NextFunction) => {
     const { userId } = req.user as { userId: string };
@@ -39,8 +39,8 @@ export const updateUser: RequestHandler = async (
 
         let updatedUserInfo = {};
 
-        if (username && !(await isPassphraseUnique(username))) {
-            res.status(409).json({ error: 'username already taken' });
+        if (username && !(await isPassphraseUnique(username, userId))) {
+            return res.status(409).json({ error: 'username already taken' });
         }
 
         if (body && file) {
@@ -54,10 +54,9 @@ export const updateUser: RequestHandler = async (
             const storageRef = ref(storage, 'avatars/' + file.originalname);
             await uploadBytes(storageRef, file.buffer);
             const downloadURL = await getDownloadURL(storageRef);
-
-            updatedUserInfo = { ...updateData, avatar: downloadURL };
+            updatedUserInfo = { ...updateData, avatar: downloadURL, username };
         } else {
-            updatedUserInfo = { ...updateData };
+            updatedUserInfo = { ...updateData, username };
         }
 
         const existingUser = await User.findById(userId).select('-authInfo.confirmationCode').select('-authInfo.confirmed');
