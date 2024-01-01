@@ -3,6 +3,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import User, { UserInterface } from '../../models/User.model';
 import { UpdateUserValidate } from './user.validate';
+import MessageResponse from '../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../interfaces/ErrorResponses';
 import isPassphraseUnique from '../../utils/isPassphraseUnique';
 
@@ -76,5 +77,21 @@ export const updateUser: RequestHandler = async (
         }
     } catch (error) {
         next(error);
+    }
+};
+
+export const deleteUser: RequestHandler = async (req: Request, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
+    const { userId } = req.user as { userId: string };
+
+    try {
+        const user = await User.findByIdAndDelete(userId);
+
+        if (user) {
+            res.status(200).json({ message: 'Account Deleted Successfully' });
+        } else {
+            res.status(404).json({ error: 'user not found' });
+        }
+    } catch (err) {
+        next(err);
     }
 };
