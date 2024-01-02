@@ -45,8 +45,7 @@ export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResp
             userInfo: {
                 name,
                 username: randomUsername
-            },
-            preferences: {}
+            }
         });
 
         await newUser.save();

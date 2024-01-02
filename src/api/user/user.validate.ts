@@ -26,7 +26,7 @@ export const UpdateUserValidate = z
             .default('')
             .optional(),
         avatar: z.unknown().optional(),
-        darkMode: z.boolean().optional(),
+        theme: z.union([z.literal('os'), z.literal('light'), z.literal('dark')]).optional(),
         username: z
             .string()
             .trim()

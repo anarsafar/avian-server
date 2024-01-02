@@ -34,8 +34,7 @@ export const strategyHelper = async (profile: any, done: VerifyCallback, provide
                     bio: provider === 'github' ? profile._json.bio : '',
                     avatar: profile.photos[0].value,
                     username: randomUsername
-                },
-                preferences: {}
+                }
             });
             await newUser.save();
             done(null, newUser);

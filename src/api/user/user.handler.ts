@@ -17,7 +17,6 @@ export const getUser: RequestHandler = async (req: Request, res: Response<UserIn
             .select('-authInfo.password')
             .select('-authInfo.confirmationTimestamp')
             .select('-resetPassword');
-
         if (user) {
             res.status(200).json(user);
         } else {
@@ -36,7 +35,7 @@ export const updateUser: RequestHandler = async (
     try {
         const { userId } = req.user as { userId: string };
         const { file, body } = req;
-        const { darkMode, username, ...updateData } = body;
+        const { theme, username, ...updateData } = body;
 
         let updatedUserInfo = {};
 
@@ -60,10 +59,16 @@ export const updateUser: RequestHandler = async (
             updatedUserInfo = { ...updateData, username };
         }
 
-        const existingUser = await User.findById(userId).select('-authInfo.confirmationCode').select('-authInfo.confirmed');
+        const existingUser = await User.findById(userId)
+            .select('-authInfo.confirmationCode')
+            .select('-authInfo.confirmed')
+            .select('-authInfo.password')
+            .select('-authInfo.confirmationTimestamp')
+            .select('-resetPassword');
+
         if (existingUser) {
-            if (darkMode !== undefined) {
-                existingUser.preferences.darkMode = darkMode;
+            if (theme !== undefined) {
+                existingUser.preferences.theme = theme;
                 existingUser.markModified('preferences');
             }
 

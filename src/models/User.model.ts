@@ -84,7 +84,7 @@ export const UserZodSchema = z.object({
         .optional(),
 
     preferences: z.object({
-        darkMode: z.boolean().default(false).optional()
+        theme: z.union([z.literal('os'), z.literal('light'), z.literal('dark')])
     }),
     online: z.boolean().default(false).optional(),
     lastSeen: z.date().optional(),
@@ -195,10 +195,12 @@ const UserSchema = new Schema(
         preferences: {
             type: Object,
             required: true,
-            default: {},
+            default: {
+                theme: 'os'
+            },
             properties: {
-                darkMode: {
-                    type: Boolean
+                theme: {
+                    type: String
                 }
             }
         },
