@@ -212,7 +212,22 @@ const UserSchema = new Schema(
                 isBlocked: { type: Boolean, default: false },
                 _id: false
             }
-        ]
+        ],
+        conversations: {
+            type: [
+                {
+                    conversation: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Conversation',
+                        required: true
+                    },
+                    isArchived: { type: Boolean, default: false },
+                    unreadCount: { type: Number, default: 0 },
+                    isMuted: { type: Boolean, default: false }
+                }
+            ],
+            default: []
+        }
     },
     {
         versionKey: false
