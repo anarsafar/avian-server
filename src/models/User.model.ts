@@ -216,14 +216,10 @@ const UserSchema = new Schema(
         conversations: {
             type: [
                 {
-                    conversation: {
-                        type: Schema.Types.ObjectId,
-                        ref: 'Conversation',
-                        required: true
-                    },
-                    isArchived: { type: Boolean, default: false },
-                    unreadCount: { type: Number, default: 0 },
-                    isMuted: { type: Boolean, default: false }
+                    type: Schema.Types.ObjectId,
+                    ref: 'Conversation',
+                    index: true,
+                    required: true
                 }
             ],
             default: []

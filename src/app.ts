@@ -12,13 +12,10 @@ import MessageResponse from './interfaces/MessageResponse';
 import * as middlewares from './middlewares';
 import api from './api';
 import strategies from './api/auth/social/social.strategies';
+import corsOptions from './config/cors';
 // import setCache from './middlewares/cache.middleware';
 
 const app = express();
-const corsOptions = {
-    origin: config.applicationURLs.frontendURL,
-    credentials: true
-};
 
 initializeApp(config.firebaseConfig);
 
