@@ -55,8 +55,10 @@ export const updateUser: RequestHandler = async (
             await uploadBytes(storageRef, file.buffer);
             const downloadURL = await getDownloadURL(storageRef);
             updatedUserInfo = { ...updateData, avatar: downloadURL, username };
-        } else {
+        } else if (username) {
             updatedUserInfo = { ...updateData, username };
+        } else {
+            updatedUserInfo = { ...updateData };
         }
 
         const existingUser = await User.findById(userId)

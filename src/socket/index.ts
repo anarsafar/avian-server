@@ -12,8 +12,15 @@ export function initSocket(server: Server): void {
 
     io.on('connection', (socket: Socket) => {
         console.log('A user connected');
+        console.log('Current rooms:', socket.rooms);
+        console.log('Client ID:', socket.id);
+        console.log('Handshake details:', socket.handshake);
 
         chatSocket(socket);
+
+        socket.on('disconnect', () => {
+            console.log('User disconnected');
+        });
     });
 }
 
