@@ -1,7 +1,6 @@
 import User from '../models/User.model';
 
 const updateUserStatus = async (userId: string, status: 'online' | 'offline'): Promise<void> => {
-    // TODO: Update user status
     let existingUser = await User.findById(userId);
     if (existingUser) {
         existingUser.online = status === 'online';

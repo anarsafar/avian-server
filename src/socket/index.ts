@@ -21,10 +21,11 @@ export function initSocket(server: Server): void {
     io.use((socket: Socket, next) => {
         const header = socket.handshake.headers.authorization;
         if (!verifyAccess(header, socket)) {
-            // If verification fails, emit an event to request a new access token
-            socket.emit('requestNewAccessToken');
+            const err = new Error('not authorized');
+            next(err);
+        } else {
+            return next();
         }
-        return next();
     });
 
     io.on('connection', (socket: Socket) => {
@@ -32,16 +33,15 @@ export function initSocket(server: Server): void {
         const customSocket = socket as CustomSocket;
 
         updateUserStatus(customSocket.userId, 'online');
+        socket.broadcast.emit('refreshData', customSocket.userId);
+
         chatSocket(socket);
 
-        // if refresh token fails to generate new access token then terminate session
-        socket.on('tokenError', () => {
-            socket.disconnect();
-        });
-
         socket.on('disconnect', () => {
-            updateUserStatus(customSocket.userId, 'offline');
             console.log('User disconnected');
+            updateUserStatus(customSocket.userId, 'offline');
+            // ping other users to refresh their data
+            socket.broadcast.emit('refreshData', customSocket.userId);
         });
     });
 }
