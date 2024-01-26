@@ -4,6 +4,7 @@ import chatSocket from './chatSocket';
 import corsOptions from '../config/cors';
 import verifyAccess from '../utils/verifyAccess';
 import updateUserStatus from './updateUserStatus';
+import isUserTyping from './isUserTyping';
 
 let io: SocketIOServer;
 
@@ -35,7 +36,8 @@ export function initSocket(server: Server): void {
         updateUserStatus(customSocket.userId, 'online');
         socket.broadcast.emit('refreshData', customSocket.userId);
 
-        chatSocket(socket);
+        chatSocket(customSocket);
+        isUserTyping(customSocket);
 
         socket.on('disconnect', () => {
             console.log('User disconnected');
