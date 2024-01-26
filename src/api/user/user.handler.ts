@@ -102,3 +102,22 @@ export const deleteUser: RequestHandler = async (req: Request, res: Response<Mes
         next(err);
     }
 };
+
+export const deleteAvatar: RequestHandler = async (req: Request, res: Response<{ user: UserInterface } | GeneralErrorResponse>, next: NextFunction) => {
+    const { userId } = req.user as { userId: string };
+
+    try {
+        const user = await User.findById(userId);
+
+        if (user) {
+            user.userInfo.avatar = '';
+            user.markModified('userInfo');
+            await user.save();
+            res.status(200).json({ user });
+        } else {
+            res.status(404).json({ error: 'user not found' });
+        }
+    } catch (err) {
+        next(err);
+    }
+};
