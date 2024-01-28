@@ -6,6 +6,7 @@ import { UpdateUserValidate } from './user.validate';
 import MessageResponse from '../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../interfaces/ErrorResponses';
 import isPassphraseUnique from '../../utils/isPassphraseUnique';
+import { getIO } from '../../socket';
 
 export const getUser: RequestHandler = async (req: Request, res: Response<UserInterface | GeneralErrorResponse>, next: NextFunction) => {
     const { userId } = req.user as { userId: string };
@@ -77,6 +78,9 @@ export const updateUser: RequestHandler = async (
             existingUser.userInfo = { ...existingUser?.userInfo, ...updatedUserInfo };
             existingUser.markModified('userInfo');
             await existingUser.save();
+
+            const io = getIO();
+            io.emit('refreshData', existingUser._id);
 
             res.status(200).json({ user: existingUser });
         } else {

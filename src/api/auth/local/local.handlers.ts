@@ -40,7 +40,8 @@ export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResp
                 email,
                 password: hashedPassword,
                 confirmationCode,
-                confirmed: false
+                confirmed: false,
+                confirmationTimestamp: new Date()
             },
             userInfo: {
                 name,

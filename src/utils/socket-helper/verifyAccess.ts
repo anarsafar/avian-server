@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
-import { config } from '../config/keys';
-import { JwtInterface } from '../interfaces/JwtInterface';
+import { config } from '../../config/keys';
+import { JwtInterface } from '../../interfaces/JwtInterface';
 import { Socket } from 'socket.io';
 
 const verifyAccess = (header: string | undefined, socket: Socket): boolean => {
