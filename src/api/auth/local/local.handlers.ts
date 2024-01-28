@@ -14,6 +14,7 @@ import { GeneralErrorResponse } from '../../../interfaces/ErrorResponses';
 import { JwtInterface } from '../../../interfaces/JwtInterface';
 import generateRandumUserName from '../../../utils/generateRandomUserName';
 import isPassphraseUnique from '../../../utils/isPassphraseUnique';
+import { getIO } from '../../../socket';
 
 export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResponse, SignupValidate>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
     try {
@@ -39,8 +40,7 @@ export const signUp = async (req: Request<{}, MessageResponse | GeneralErrorResp
                 email,
                 password: hashedPassword,
                 confirmationCode,
-                confirmed: false,
-                confirmationTimestamp: new Date()
+                confirmed: false
             },
             userInfo: {
                 name,
@@ -119,6 +119,28 @@ export const logOut = async (req: Request, res: Response<MessageResponse | Gener
             return res.status(500).json({ error: 'Error clearing refresh token cookie' });
         }
         res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const delivered = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const [deliveredData] = req.body;
+        const { email } = deliveredData;
+        const io = getIO();
+        console.log(email);
+        let existingUser = await User.findOne({ 'authInfo.email': email });
+
+        if (!existingUser) {
+            return res.status(404).json({ error: 'User does not exist' });
+        }
+        existingUser.authInfo.confirmationTimestamp = new Date();
+        existingUser.markModified('authInfo');
+        existingUser.save();
+
+        io.emit('confirmation-sent', email);
+        return res.status(200).json({ message: 'Email Delivered' });
     } catch (error) {
         next(error);
     }

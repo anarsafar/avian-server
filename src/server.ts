@@ -10,10 +10,11 @@ mongoose
     .then(() => {
         console.log('MongoDB connected successfully');
 
-        const server = app.listen(config.server.port, () => {
-            console.log(`Server is running on port ${config.server.port}`);
+        const server = require('http').Server(app);
+        initSocket(server);
 
-            initSocket(server);
+        server.listen(config.server.port, () => {
+            console.log(`Server is running on port ${config.server.port}`);
             scheduler();
         });
     })

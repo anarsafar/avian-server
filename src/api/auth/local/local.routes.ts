@@ -10,5 +10,6 @@ const localAuthRouter: Router = express.Router();
 localAuthRouter.post('/signup', validateRequest({ body: SignupValidate }), localAuthHandler.signUp);
 localAuthRouter.post('/login', loginLimiter, validateRequest({ body: LoginValidate }), localAuthHandler.logIn);
 localAuthRouter.post('/logout', blacklisted, localAuthHandler.logOut);
+localAuthRouter.post('/delivered', localAuthHandler.delivered);
 
 export default localAuthRouter;
