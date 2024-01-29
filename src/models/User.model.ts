@@ -88,7 +88,12 @@ export const UserZodSchema = z.object({
     }),
     online: z.boolean().default(false).optional(),
     lastSeen: z.date().optional(),
-    contacts: z.array(ContactSchema)
+    contacts: z.array(ContactSchema),
+    conversations: z.array(
+        z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
+            message: 'Invalid ObjectId format'
+        })
+    )
 });
 
 export type UserInterface = z.infer<typeof UserZodSchema> & Document;

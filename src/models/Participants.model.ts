@@ -1,4 +1,19 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose';
+import * as z from 'zod';
+
+const objectId = z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
+    message: 'Invalid ObjectId format'
+});
+
+const ParticipantI = z.object({
+    participant: objectId,
+    isAdmin: z.boolean().default(false),
+    unreadCount: z.number(),
+    isArchived: z.boolean().default(false),
+    conversation: objectId
+});
+
+export type ParticipantI = z.infer<typeof ParticipantI>;
 
 export const ParticipantSchema = new Schema(
     {
@@ -13,4 +28,6 @@ export const ParticipantSchema = new Schema(
     }
 );
 
-export const ParticipantModel = model('Participants', ParticipantSchema);
+const Participant = model<ParticipantI & Document>('Participants', ParticipantSchema);
+
+export default Participant;
