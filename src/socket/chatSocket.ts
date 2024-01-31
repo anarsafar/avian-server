@@ -3,7 +3,7 @@ import { getIO } from './index';
 import Conversation, { ConversationI } from '../models/Conversation.model';
 import Message, { MessageI } from '../models/Message.model';
 import { ObjectId } from 'mongodb';
-import updateUsersConversations from '../utils/socket-helper/updateUser';
+import updateUsersConversations from './socket-helper/updateUser';
 
 interface MsgI {
     messageBody: string;
@@ -17,7 +17,10 @@ interface PrivateMessage {
     chatId?: string;
 }
 
-const generateRoomIdentifier = (senderId: string, recipientId: string): string => `${senderId}-${recipientId}`;
+const generateRoomIdentifier = (senderId: string, recipientId: string): string => {
+    const sortedUserIds = [senderId, recipientId].sort();
+    return `${sortedUserIds[0]}-${sortedUserIds[1]}`;
+};
 
 const chatSocket = (socket: Socket): void => {
     const io = getIO();
@@ -25,21 +28,15 @@ const chatSocket = (socket: Socket): void => {
     socket.on('join-private-chat', (conversationId: string | undefined, senderId: string, recipientId: string) => {
         if (conversationId) {
             socket.join(conversationId);
-        } else {
+        } else if (senderId && recipientId) {
             const roomIdentifier = generateRoomIdentifier(senderId, recipientId);
-
             socket.join(roomIdentifier);
-
-            // Emit the roomIdentifier to the sender
-            socket.emit('room-identifier', roomIdentifier);
-
-            // TODO Emit the roomIdentifier to the recipient
         }
     });
 
     socket.on('private message', async ({ message, senderId, recipientId, chatId }: PrivateMessage) => {
         let conversationId: string;
-
+        console.log('user tries to send a message');
         // Check if the conversation already exists
         const existingConversation = chatId
             ? await Conversation.findById(chatId)
@@ -63,12 +60,12 @@ const chatSocket = (socket: Socket): void => {
         const objectId = new ObjectId(conversationId);
 
         const conversationIdString = objectId.toHexString();
+        console.log(conversationIdString);
 
-        // join to the conversation room
-        socket.join(conversationIdString);
+        const roomIdentifier = generateRoomIdentifier(senderId, recipientId);
 
-        // send message before saving to DB
-        io.to(conversationIdString).emit('private message', { message, senderId });
+        //send message before saving to DB
+        io.to(roomIdentifier).emit('private message', { message, senderId });
 
         // save message to DB
         const newMessage: MessageI = {

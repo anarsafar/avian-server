@@ -2,8 +2,8 @@ import { Server } from 'http';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import chatSocket from './chatSocket';
 import corsOptions from '../config/cors';
-import verifyAccess from '../utils/socket-helper/verifyAccess';
-import updateUserStatus from '../utils/socket-helper/updateUserStatus';
+import verifyAccess from './socket-helper/verifyAccess';
+import updateUserStatus from './socket-helper/updateUserStatus';
 import isUserTyping from './isUserTyping';
 
 let io: SocketIOServer;

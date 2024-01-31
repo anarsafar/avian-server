@@ -18,7 +18,7 @@ export type ConversationI = z.infer<typeof ConversationI>;
 
 const ConversationSchema = new Schema(
     {
-        participants: [{ type: Schema.Types.ObjectId, ref: 'Participants', required: true, index: true }],
+        participants: [{ type: Schema.Types.ObjectId, ref: 'User', required: true, index: true }],
         type: { type: String, enum: ['private', 'group'], default: 'private' },
         conversationName: { type: String },
         conversationCover: { type: String },
