@@ -1,16 +1,18 @@
 import { Server } from 'http';
 import { Server as SocketIOServer, Socket } from 'socket.io';
-import chatSocket from './chatSocket';
+
 import corsOptions from '../config/cors';
 import verifyAccess from './socket-helper/verifyAccess';
 import updateUserStatus from './socket-helper/updateUserStatus';
 import isUserTyping from './isUserTyping';
+import chatSocket from './chatSocket';
 
 let io: SocketIOServer;
 
-interface CustomSocket extends Socket {
-    userId: string;
-}
+const userStatus = (socket: Socket, status: 'online' | 'offline') => {
+    updateUserStatus(socket.data.userId, status);
+    socket.broadcast.emit('refreshData', socket.data.userId);
+};
 
 export function initSocket(server: Server): void {
     io = new SocketIOServer(server, {
@@ -18,32 +20,29 @@ export function initSocket(server: Server): void {
         cookie: true
     });
 
-    // get user id from client
+    // verify user middleware
     io.use((socket: Socket, next) => {
         const header = socket.handshake.headers.authorization;
         if (!verifyAccess(header, socket)) {
-            const err = new Error('not authorized');
-            next(err);
+            return next(new Error('Authentication failed'));
         } else {
-            return next();
+            next();
         }
     });
 
     io.on('connection', (socket: Socket) => {
         console.log('A user connected');
-        const customSocket = socket as CustomSocket;
 
-        updateUserStatus(customSocket.userId, 'online');
-        socket.broadcast.emit('refreshData', customSocket.userId);
-
-        chatSocket(customSocket);
-        isUserTyping(customSocket);
+        userStatus(socket, 'online');
+        chatSocket(socket);
+        isUserTyping(socket);
 
         socket.on('disconnect', () => {
             console.log('User disconnected');
-            updateUserStatus(customSocket.userId, 'offline');
-            // ping other users to refresh their data
-            socket.broadcast.emit('refreshData', customSocket.userId);
+
+            if (socket.data.userId) {
+                userStatus(socket, 'offline');
+            }
         });
     });
 }

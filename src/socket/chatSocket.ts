@@ -27,17 +27,20 @@ const chatSocket = (socket: Socket): void => {
 
     socket.on('join-private-chat', (conversationId: string | undefined, senderId: string, recipientId: string) => {
         if (conversationId) {
+            console.log(conversationId);
             socket.join(conversationId);
-        } else if (senderId && recipientId) {
+        }
+
+        if (senderId && recipientId) {
             const roomIdentifier = generateRoomIdentifier(senderId, recipientId);
+            console.log(roomIdentifier);
             socket.join(roomIdentifier);
         }
     });
 
     socket.on('private message', async ({ message, senderId, recipientId, chatId }: PrivateMessage) => {
         let conversationId: string;
-        console.log('user tries to send a message');
-        // Check if the conversation already exists
+
         const existingConversation = chatId
             ? await Conversation.findById(chatId)
             : await Conversation.findOne({
@@ -58,11 +61,9 @@ const chatSocket = (socket: Socket): void => {
         }
 
         const objectId = new ObjectId(conversationId);
-
         const conversationIdString = objectId.toHexString();
-        console.log(conversationIdString);
 
-        const roomIdentifier = generateRoomIdentifier(senderId, recipientId);
+        const roomIdentifier = chatId ? conversationIdString : generateRoomIdentifier(senderId, recipientId);
 
         //send message before saving to DB
         io.to(roomIdentifier).emit('private message', { message, senderId });
