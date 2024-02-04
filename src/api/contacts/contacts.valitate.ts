@@ -4,7 +4,7 @@ export const ValidateContact = z.object({
     contact: z
         .string()
         .trim()
-        .min(1, { message: 'provide username or email' })
+        .min(3, { message: 'provide username or email' })
         .refine(
             (value) => {
                 const isEmail = /\S+@\S+\.\S+/.test(value);
