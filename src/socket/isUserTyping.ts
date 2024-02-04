@@ -1,12 +1,12 @@
 import { Socket } from 'socket.io';
 
 function isUserTyping(socket: Socket): void {
-    socket.on('typing', (userId: string) => {
-        socket.broadcast.emit('typing', userId);
+    socket.on('typing', (userId: string, roomId: string) => {
+        socket.to(roomId).emit('typing', userId);
     });
 
-    socket.on('stop typing', (userId) => {
-        socket.broadcast.emit('stop typing', userId);
+    socket.on('stop typing', (userId: string, roomId: string) => {
+        socket.to(roomId).emit('stop typing', userId);
     });
 }
 

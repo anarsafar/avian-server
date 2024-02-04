@@ -26,16 +26,17 @@ const chatSocket = (socket: Socket): void => {
     const io = getIO();
 
     socket.on('join-private-chat', (conversationId: string | undefined, senderId: string, recipientId: string) => {
+        socket.rooms.forEach((room) => (room !== socket.id ? socket.leave(room) : null));
+
         if (conversationId) {
-            console.log(conversationId);
             socket.join(conversationId);
         }
 
         if (senderId && recipientId) {
             const roomIdentifier = generateRoomIdentifier(senderId, recipientId);
-            console.log(roomIdentifier);
             socket.join(roomIdentifier);
         }
+        console.log('All Socket rooms ', socket.rooms);
     });
 
     socket.on('private message', async ({ message, senderId, recipientId, chatId }: PrivateMessage) => {
