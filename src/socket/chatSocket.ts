@@ -1,8 +1,9 @@
 import { Socket } from 'socket.io';
+import { ObjectId } from 'mongodb';
+
 import { getIO } from './index';
 import Conversation, { ConversationI } from '../models/Conversation.model';
 import Message, { MessageI } from '../models/Message.model';
-import { ObjectId } from 'mongodb';
 import updateUsersConversations from './socket-helper/updateUser';
 
 interface MsgI {
@@ -69,6 +70,9 @@ const chatSocket = (socket: Socket): void => {
         //send message before saving to DB
         io.to(roomIdentifier).emit('private message', { message, senderId });
 
+        // update user conversation
+        updateUsersConversations([senderId, recipientId], conversationId);
+
         // save message to DB
         const newMessage: MessageI = {
             sender: senderId,
@@ -83,9 +87,6 @@ const chatSocket = (socket: Socket): void => {
 
         // Update the conversation with the new message
         await Conversation.findByIdAndUpdate(conversationId, { $push: { messages: createdMessage._id } }, { new: true });
-
-        // update user conversation
-        updateUsersConversations([senderId, recipientId], conversationId);
     });
 };
 
