@@ -73,6 +73,9 @@ const chatSocket = (socket: Socket): void => {
         // update user conversation
         updateUsersConversations([senderId, recipientId], conversationId);
 
+        // invalidate conversations on front-end
+        io.emit('update-conversations', recipientId);
+
         // save message to DB
         const newMessage: MessageI = {
             sender: senderId,
