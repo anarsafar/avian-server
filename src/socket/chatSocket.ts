@@ -3,8 +3,9 @@ import { ObjectId } from 'mongodb';
 
 import { getIO } from './index';
 import Conversation, { ConversationI } from '../models/Conversation.model';
-import Message, { MessageI } from '../models/Message.model';
-import updateUsersConversations from './socket-helper/updateUser';
+import updateUsersConversations from './user/updateUser';
+import generateRoomIdentifier from './socket-helper/generateRoomId';
+import saveMessages from './messages/saveMessages';
 
 interface MsgI {
     messageBody: string;
@@ -18,27 +19,8 @@ interface PrivateMessage {
     chatId?: string;
 }
 
-const generateRoomIdentifier = (senderId: string, recipientId: string): string => {
-    const sortedUserIds = [senderId, recipientId].sort();
-    return `${sortedUserIds[0]}-${sortedUserIds[1]}`;
-};
-
 const chatSocket = (socket: Socket): void => {
     const io = getIO();
-
-    socket.on('join-private-chat', (conversationId: string | undefined, senderId: string, recipientId: string) => {
-        socket.rooms.forEach((room) => (room !== socket.id ? socket.leave(room) : null));
-
-        if (conversationId) {
-            socket.join(conversationId);
-        }
-
-        if (senderId && recipientId) {
-            const roomIdentifier = generateRoomIdentifier(senderId, recipientId);
-            socket.join(roomIdentifier);
-        }
-        console.log('All Socket rooms ', socket.rooms);
-    });
 
     socket.on('private message', async ({ message, senderId, recipientId, chatId }: PrivateMessage) => {
         let conversationId: string;
@@ -67,29 +49,13 @@ const chatSocket = (socket: Socket): void => {
 
         const roomIdentifier = chatId ? conversationIdString : generateRoomIdentifier(senderId, recipientId);
 
-        //send message before saving to DB
-        io.to(roomIdentifier).emit('private message', { message, senderId });
-
-        // update user conversation
+        saveMessages(message, senderId, recipientId, conversationId);
         updateUsersConversations([senderId, recipientId], conversationId);
+
+        io.to(roomIdentifier).emit('private message', { message, senderId });
 
         // invalidate conversations on front-end
         io.emit('update-conversations', recipientId);
-
-        // save message to DB
-        const newMessage: MessageI = {
-            sender: senderId,
-            recipients: [recipientId, senderId],
-            timestamp: message.timeStamp,
-            content: message.messageBody,
-            conversation: conversationId,
-            isRead: false
-        };
-
-        const createdMessage = await Message.create(newMessage);
-
-        // Update the conversation with the new message
-        await Conversation.findByIdAndUpdate(conversationId, { $push: { messages: createdMessage._id } }, { new: true });
     });
 };
 

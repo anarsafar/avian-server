@@ -3,9 +3,10 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 
 import corsOptions from '../config/cors';
 import verifyAccess from './socket-helper/verifyAccess';
-import updateUserStatus from './socket-helper/updateUserStatus';
+import updateUserStatus from './user/updateUserStatus';
 import isUserTyping from './isUserTyping';
 import chatSocket from './chatSocket';
+import joinChat from './joinChat';
 
 let io: SocketIOServer;
 
@@ -17,7 +18,8 @@ const userStatus = (socket: Socket, status: 'online' | 'offline') => {
 export function initSocket(server: Server): void {
     io = new SocketIOServer(server, {
         cors: corsOptions,
-        cookie: true
+        cookie: true,
+        connectionStateRecovery: {}
     });
 
     // verify user middleware
@@ -34,12 +36,12 @@ export function initSocket(server: Server): void {
         console.log('A user connected');
 
         userStatus(socket, 'online');
+        joinChat(socket);
         chatSocket(socket);
         isUserTyping(socket);
 
         socket.on('disconnect', () => {
             console.log('User disconnected');
-
             if (socket.data.userId) {
                 userStatus(socket, 'offline');
             }
