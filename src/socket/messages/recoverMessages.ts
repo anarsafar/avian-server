@@ -1,13 +1,33 @@
-import Message from '../../models/Message.model';
+import { Socket } from 'socket.io';
+import { getIO } from '..';
+import getMessagesAfterOffset from './getMessagesAfterOffset';
 
-const getMessagesAfterOffset = async (offset: number, conversation: string) => {
-    try {
-        const messages = await Message.find({ timestamp: { $gt: new Date(offset) }, conversation });
+const recoverMessages = async (socket: Socket): Promise<void> => {
+    const io = getIO();
+    if (!socket.recovered) {
+        console.log('state-recovery', socket.handshake.auth);
 
-        return messages;
-    } catch (error) {
-        throw new Error(`Error retrieving messages: ${String(error)}`);
+        const room = socket.handshake.auth.room;
+        const offset = socket.handshake.auth.serverOffset;
+
+        try {
+            if (room) {
+                const messages = await getMessagesAfterOffset(offset, room);
+
+                messages.forEach((message) => {
+                    io.to(socket.id).emit('private message', {
+                        message: {
+                            messageBody: message.content,
+                            timeStamp: message.timestamp
+                        },
+                        senderId: message.sender
+                    });
+                });
+            }
+        } catch (e) {
+            console.error('Error during state recovery:', e);
+        }
     }
 };
 
-export default getMessagesAfterOffset;
+export default recoverMessages;

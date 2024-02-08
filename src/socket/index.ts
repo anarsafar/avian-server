@@ -7,6 +7,7 @@ import updateUserStatus from './user/updateUserStatus';
 import isUserTyping from './isUserTyping';
 import chatSocket from './chatSocket';
 import joinChat from './joinChat';
+import recoverMessages from './messages/recoverMessages';
 
 let io: SocketIOServer;
 
@@ -32,13 +33,14 @@ export function initSocket(server: Server): void {
         }
     });
 
-    io.on('connection', (socket: Socket) => {
+    io.on('connection', async (socket: Socket) => {
         console.log('A user connected');
 
         userStatus(socket, 'online');
         joinChat(socket);
         chatSocket(socket);
         isUserTyping(socket);
+        recoverMessages(socket);
 
         socket.on('disconnect', () => {
             console.log('User disconnected');
