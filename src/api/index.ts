@@ -9,6 +9,7 @@ import userRoute from './user/user.route';
 import socialRoute from './auth/social/social.route';
 import contactRoute from './contacts/contacts.route';
 import conversationRoute from './conversation/conversation.route';
+import messagesRoute from './messages/messages.route';
 
 const router: Router = express.Router();
 
@@ -26,5 +27,6 @@ router.use('/reset-password', resetPasswordRouter);
 router.use('/user', userRoute);
 router.use('/contacts', contactRoute);
 router.use('/conversations', conversationRoute);
+router.use('/messages', messagesRoute);
 
 export default router;

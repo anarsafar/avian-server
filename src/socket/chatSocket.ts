@@ -49,10 +49,10 @@ const chatSocket = (socket: Socket): void => {
 
         const roomIdentifier = chatId ? conversationIdString : generateRoomIdentifier(senderId, recipientId);
 
-        saveMessages(message, senderId, recipientId, conversationId);
+        const newMessage = await saveMessages(message, senderId, recipientId, conversationId);
         updateUsersConversations([senderId, recipientId], conversationId);
 
-        io.to(roomIdentifier).emit('private message', { message, senderId });
+        io.to(roomIdentifier).emit('private message', newMessage);
 
         // invalidate conversations on front-end
         io.emit('update-conversations', recipientId);

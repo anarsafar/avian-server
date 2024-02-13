@@ -6,7 +6,7 @@ interface MsgI {
     timeStamp: Date;
 }
 
-const saveMessages = async (message: MsgI, senderId: string, recipientId: string, conversationId: string): Promise<void> => {
+const saveMessages = async (message: MsgI, senderId: string, recipientId: string, conversationId: string): Promise<MessageI> => {
     const newMessage: MessageI = {
         sender: senderId,
         recipients: [recipientId, senderId],
@@ -20,6 +20,8 @@ const saveMessages = async (message: MsgI, senderId: string, recipientId: string
 
     // Update the conversation with the new message
     await Conversation.findByIdAndUpdate(conversationId, { $push: { messages: createdMessage._id } }, { new: true });
+
+    return newMessage;
 };
 
 export default saveMessages;
