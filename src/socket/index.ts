@@ -8,6 +8,7 @@ import isUserTyping from './isUserTyping';
 import chatSocket from './chatSocket';
 import joinChat from './joinChat';
 import recoverMessages from './messages/recoverMessages';
+import readMessage from './readMessage';
 
 let io: SocketIOServer;
 
@@ -41,6 +42,7 @@ export function initSocket(server: Server): void {
         chatSocket(socket);
         isUserTyping(socket);
         recoverMessages(socket);
+        readMessage(socket);
 
         socket.on('disconnect', () => {
             console.log('User disconnected');
