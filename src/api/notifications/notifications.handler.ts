@@ -4,21 +4,26 @@ import User from '../../models/User.model';
 import MessageResponse from '../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../interfaces/ErrorResponses';
 import { ValidateNotifaction } from './notifications.validate';
-import Notification from '../../models/Notification.model';
+import Notification, { NotificationI } from '../../models/Notification.model';
 
-export const addNotification = async (req: Request<{}, MessageResponse | GeneralErrorResponse, ValidateNotifaction>, res: Response<MessageResponse | GeneralErrorResponse>, next: NextFunction) => {
+export const addNotification = async (
+    req: Request<{ email: string }, MessageResponse | GeneralErrorResponse, ValidateNotifaction>,
+    res: Response<MessageResponse | GeneralErrorResponse>,
+    next: NextFunction
+) => {
     try {
-        const { userId } = req.user as { userId: string };
+        const { email } = req.params;
+
         const { type, osInfo, location, browserInfo } = req.body;
 
-        const existingUser = await User.findById(userId);
+        const existingUser = await User.findOne({ 'authInfo.email': email });
 
         if (!existingUser) {
             return res.status(404).json({ error: 'user not found' });
         }
 
         const newNotification = new Notification({
-            userId,
+            userId: existingUser._id,
             type,
             osInfo,
             browserInfo,
@@ -30,7 +35,7 @@ export const addNotification = async (req: Request<{}, MessageResponse | General
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-        await Notification.deleteMany({ userId, createdAt: { $lt: thirtyDaysAgo } });
+        await Notification.deleteMany({ userId: existingUser._id, createdAt: { $lt: thirtyDaysAgo } });
 
         return res.status(201).json({ message: 'Notification added successfully' });
     } catch (error) {
@@ -38,7 +43,7 @@ export const addNotification = async (req: Request<{}, MessageResponse | General
     }
 };
 
-export const getNotifications = async (req: Request<{}, MessageResponse | GeneralErrorResponse>, res: Response, next: NextFunction) => {
+export const getNotifications = async (req: Request<{}, MessageResponse | GeneralErrorResponse>, res: Response<GeneralErrorResponse | { notifications: NotificationI[] }>, next: NextFunction) => {
     try {
         const { userId } = req.user as { userId: string };
 
