@@ -56,6 +56,10 @@ const CLIENT_SECRET_FACEBOOK = process.env.FACEBOOK_APP_SECRET || '';
 const CLIENT_ID_GITHUB = process.env.GITHUB_APP_ID || '';
 const CLIENT_SECRET_GITHUB = process.env.GITHUB_APP_SECRET || '';
 
+// ! One Signal Keys
+const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID || '';
+const RESTAPI_KEY = process.env.RESTAPI_KEY || '';
+
 export const config = {
     mongo: {
         username: MONGO_USERNAME,
@@ -98,5 +102,9 @@ export const config = {
     github: {
         clientId: CLIENT_ID_GITHUB,
         secretKey: CLIENT_SECRET_GITHUB
+    },
+    oneSignal: {
+        appId: ONESIGNAL_APP_ID,
+        restAPIKey: RESTAPI_KEY
     }
 };
