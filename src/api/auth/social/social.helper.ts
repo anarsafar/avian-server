@@ -59,5 +59,5 @@ export const callbackHelper = async (user: any, err: Error, res: Response | any,
     const refreshToken = await generateRefreshToken(user._id);
 
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.nodeEnv === 'production', maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/' }); // 7 days
-    res.redirect(`${config.applicationURLs.frontendURL}/auth/signin?accessToken=${accessToken}`);
+    res.redirect(`${config.applicationURLs.frontendURL}/auth/signin?accessToken=${accessToken}&id=${user.authInfo.providerId}`);
 };

@@ -5,7 +5,8 @@ const ContactSchema = z.object({
     user: z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
         message: 'Invalid ObjectId format'
     }),
-    isBlocked: z.boolean().default(false)
+    isBlocked: z.boolean().default(false),
+    notification: z.boolean().default(true)
 });
 
 export type ContactSchema = z.infer<typeof ContactSchema>;
@@ -215,6 +216,7 @@ const UserSchema = new Schema(
             {
                 user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
                 isBlocked: { type: Boolean, default: false },
+                notification: { type: Boolean, default: true },
                 _id: false
             }
         ],

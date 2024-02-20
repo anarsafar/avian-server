@@ -7,16 +7,16 @@ import { ValidateNotifaction } from './notifications.validate';
 import Notification, { NotificationI } from '../../models/Notification.model';
 
 export const addNotification = async (
-    req: Request<{ email: string }, MessageResponse | GeneralErrorResponse, ValidateNotifaction>,
+    req: Request<{ searchParam: string }, MessageResponse | GeneralErrorResponse, ValidateNotifaction>,
     res: Response<MessageResponse | GeneralErrorResponse>,
     next: NextFunction
 ) => {
     try {
-        const { email } = req.params;
+        const { searchParam } = req.params;
 
         const { type, osInfo, location, browserInfo } = req.body;
 
-        const existingUser = await User.findOne({ 'authInfo.email': email });
+        const existingUser = (await User.findOne({ 'authInfo.email': searchParam })) || (await User.findOne({ 'authInfo.providerId': searchParam }));
 
         if (!existingUser) {
             return res.status(404).json({ error: 'user not found' });

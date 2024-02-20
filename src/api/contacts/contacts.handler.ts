@@ -33,7 +33,8 @@ export const addContact = async (req: Request<{}, MessageResponse | GeneralError
 
         existingUser.contacts.push({
             user: foundedContact._id,
-            isBlocked: false
+            isBlocked: false,
+            notification: true
         });
 
         existingUser.markModified('contacts');
