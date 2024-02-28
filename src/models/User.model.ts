@@ -90,6 +90,7 @@ export const UserZodSchema = z.object({
     online: z.boolean().default(false).optional(),
     lastSeen: z.date().optional(),
     contacts: z.array(ContactSchema),
+    notification: z.boolean().default(true),
     conversations: z.array(
         z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
             message: 'Invalid ObjectId format'
@@ -211,6 +212,7 @@ const UserSchema = new Schema(
             }
         },
         online: { type: Boolean, default: false },
+        notification: { type: Boolean, default: true },
         lastSeen: { type: Date, default: Date.now },
         contacts: [
             {
