@@ -109,7 +109,8 @@ export const contactNotification = async (
         }
 
         existingContact.notification = !existingContact.notification;
-        existingUser.contacts = [...existingUser.contacts, existingContact];
+        const contacts = existingUser.contacts.filter((contact) => contact.user.toString() !== contactObjectId.toString());
+        existingUser.contacts = [...contacts, existingContact];
         existingUser.save();
 
         return res.status(200).json({ user: existingUser });

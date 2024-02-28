@@ -52,6 +52,7 @@ const chatSocket = (socket: Socket): void => {
         const newMessage = await saveMessages(message, senderId, recipientId, conversationId);
         updateUsersConversations([senderId, recipientId], conversationId);
 
+        io.emit('notification', senderId, recipientId);
         io.to(roomIdentifier).emit('private message', newMessage);
 
         // invalidate conversations on front-end
