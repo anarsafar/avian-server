@@ -15,13 +15,7 @@ const recoverMessages = async (socket: Socket): Promise<void> => {
                 const messages = await getMessagesAfterOffset(offset, room);
 
                 messages.forEach((message) => {
-                    io.to(socket.id).emit('private message', {
-                        message: {
-                            messageBody: message.content,
-                            timeStamp: message.timestamp
-                        },
-                        senderId: message.sender
-                    });
+                    io.to(socket.id).emit('private message', message);
                 });
             }
         } catch (e) {
