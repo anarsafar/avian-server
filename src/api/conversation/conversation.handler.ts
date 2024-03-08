@@ -8,13 +8,16 @@ export const getConversations = async (req: Request, res: Response, next: NextFu
         const { userId } = req.user as { userId: string };
 
         const user = await User.findById(userId).populate([
-            { path: 'conversations', populate: { path: 'participants', select: 'userInfo.name userInfo.avatar online lastSeen authInfo.email authInfo.providerId, userInfo.username' } }
+            {
+                path: 'conversations.conversation',
+                strictPopulate: false,
+                populate: { path: 'participants', select: 'userInfo.name userInfo.avatar online lastSeen authInfo.email authInfo.providerId, userInfo.username' }
+            }
         ]);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-
         return res.status(200).json({ conversations: user.conversations });
     } catch (error) {
         next(error);
@@ -32,13 +35,14 @@ export const deleteConversation = async (req: Request, res: Response, next: Next
             return res.status(404).json({ error: 'User not found' });
         }
 
-        if (existingUser.conversations.indexOf(conversationId) === -1) {
+        const conversationObjectId = new mongoose.Types.ObjectId(conversationId);
+        const existingIndex = existingUser.conversations.findIndex((chat) => String(chat.conversation) === String(conversationObjectId));
+
+        if (existingIndex === -1) {
             return res.status(404).json({ error: 'Conversation not found' });
         }
-        const conversationObjectId = new mongoose.Types.ObjectId(conversationId);
-        const conversationList = existingUser.conversations.filter((conversation) => conversation.toString() !== conversationObjectId.toString());
 
-        existingUser.conversations = conversationList;
+        existingUser.conversations.splice(existingIndex, 1);
         existingUser.markModified('conversations');
         await existingUser.save();
 

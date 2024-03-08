@@ -92,8 +92,12 @@ export const UserZodSchema = z.object({
     contacts: z.array(ContactSchema),
     notification: z.boolean().default(true),
     conversations: z.array(
-        z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
-            message: 'Invalid ObjectId format'
+        z.object({
+            conversation: z.string().refine((value) => /^[a-f\d]{24}$/i.test(value), {
+                message: 'Invalid ObjectId format'
+            }),
+            muted: z.boolean().default(false),
+            unread: z.number().default(0)
         })
     )
 });
@@ -225,10 +229,20 @@ const UserSchema = new Schema(
         conversations: {
             type: [
                 {
-                    type: Schema.Types.ObjectId,
-                    ref: 'Conversation',
-                    index: true,
-                    required: true
+                    _id: false,
+                    conversation: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Conversation',
+                        required: true
+                    },
+                    muted: {
+                        type: Boolean,
+                        default: false
+                    },
+                    unread: {
+                        type: Number,
+                        default: 0
+                    }
                 }
             ],
             default: []

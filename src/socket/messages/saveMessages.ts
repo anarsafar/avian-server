@@ -19,7 +19,22 @@ const saveMessages = async (message: MsgI, senderId: string, recipientId: string
     const createdMessage = await Message.create(newMessage);
 
     // Update the conversation with the new message
-    await Conversation.findByIdAndUpdate(conversationId, { $push: { messages: createdMessage._id } }, { new: true });
+    const existingConversation = await Conversation.findById(conversationId);
+
+    if (existingConversation) {
+        existingConversation.cardData = {
+            lastMessageSender: senderId,
+            lastMessageContent: message.messageBody,
+            lastMessageDate: message.timeStamp
+        };
+
+        existingConversation.messages.push(createdMessage._id);
+
+        existingConversation.markModified('cardData');
+        existingConversation.markModified('messages');
+
+        existingConversation.save();
+    }
 
     return newMessage;
 };

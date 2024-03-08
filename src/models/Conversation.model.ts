@@ -11,6 +11,11 @@ const ConversationI = z.object({
     conversationName: z.string().optional(),
     conversationCover: z.string().optional(),
     messages: z.array(objectId).default([]),
+    cardData: z.object({
+        lastMessageSender: objectId.optional(),
+        lastMessageContent: z.string().default(''),
+        lastMessageDate: z.date().optional()
+    }),
     admin: objectId.optional()
 });
 
@@ -23,6 +28,24 @@ const ConversationSchema = new Schema(
         conversationName: { type: String },
         conversationCover: { type: String },
         messages: [{ type: Schema.Types.ObjectId, ref: 'Message', index: true }],
+        cardData: {
+            type: 'Object',
+            required: true,
+            properties: {
+                lastMessageSender: {
+                    type: String,
+                    required: false
+                },
+                lastMessageContent: {
+                    type: String,
+                    required: false
+                },
+                lastMessageDate: {
+                    type: Date,
+                    required: false
+                }
+            }
+        },
         admin: { type: Schema.Types.ObjectId, ref: 'User', index: true }
     },
     {

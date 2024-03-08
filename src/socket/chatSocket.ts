@@ -35,7 +35,12 @@ const chatSocket = (socket: Socket): void => {
             const newConversation: ConversationI = {
                 participants: [senderId, recipientId],
                 type: 'private',
-                messages: []
+                messages: [],
+                cardData: {
+                    lastMessageContent: message.messageBody,
+                    lastMessageSender: senderId,
+                    lastMessageDate: message.timeStamp
+                }
             };
 
             const createdConversation = await Conversation.create(newConversation);
@@ -49,14 +54,14 @@ const chatSocket = (socket: Socket): void => {
 
         const roomIdentifier = chatId ? conversationIdString : generateRoomIdentifier(senderId, recipientId);
 
+        updateUsersConversations([senderId, recipientId], conversationId, recipientId);
         const newMessage = await saveMessages(message, senderId, recipientId, conversationId);
-        updateUsersConversations([senderId, recipientId], conversationId);
 
         io.emit('notification', senderId, recipientId);
         io.to(roomIdentifier).emit('private message', newMessage);
 
         // invalidate conversations on front-end
-        io.emit('update-conversations', recipientId);
+        io.emit('update-conversations', recipientId, senderId);
     });
 };
 
