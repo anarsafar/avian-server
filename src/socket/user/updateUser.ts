@@ -1,6 +1,8 @@
+import mongoose from 'mongoose';
 import User from '../../models/User.model';
+import Message from '../../models/Message.model';
 
-const updateUsersConversations = async (userIds: string[], conversationId: string, recipientId: string): Promise<void> => {
+const updateUsersConversations = async (userIds: string[], conversationId: string, recipientId: string, senderId: string): Promise<void> => {
     try {
         const users = await User.find({ _id: { $in: userIds } });
         for (const user of users) {
@@ -17,9 +19,13 @@ const updateUsersConversations = async (userIds: string[], conversationId: strin
 
                 user.conversations.splice(existingIndex, 1);
 
-                // if (conversation && user._id == recipientId) {
-                //     conversation.unread = ++conversation.unread;
-                // }
+                if (conversation && user._id == recipientId) {
+                    const roomObjectId = new mongoose.Types.ObjectId(conversationId);
+                    const senderObjectId = new mongoose.Types.ObjectId(senderId);
+
+                    const messages = await Message.find({ conversation: roomObjectId, isRead: false, sender: senderObjectId });
+                    conversation.unread = messages.length;
+                }
 
                 if (conversation) {
                     user.conversations.unshift(conversation);

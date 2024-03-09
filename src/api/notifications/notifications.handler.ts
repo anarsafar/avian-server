@@ -6,6 +6,8 @@ import MessageResponse from '../../interfaces/MessageResponse';
 import { GeneralErrorResponse } from '../../interfaces/ErrorResponses';
 import { ValidateNotifaction } from './notifications.validate';
 import Notification, { NotificationI } from '../../models/Notification.model';
+import Conversation from '../../models/Conversation.model';
+import { getIO } from '../../socket';
 
 export const addNotification = async (
     req: Request<{ searchParam: string }, MessageResponse | GeneralErrorResponse, ValidateNotifaction>,
@@ -90,6 +92,8 @@ export const contactNotification = async (
     res: Response<GeneralErrorResponse | { user: UserInterface }>,
     next: NextFunction
 ) => {
+    const io = getIO();
+
     try {
         const { userId } = req.user as { userId: string };
         const { contactId } = req.params;
@@ -101,6 +105,7 @@ export const contactNotification = async (
         }
 
         const contactObjectId = new mongoose.Types.ObjectId(contactId);
+        const userObjectId = new mongoose.Types.ObjectId(userId);
 
         const existingContact = existingUser.contacts.find((contact) => contact.user.toString() === contactObjectId.toString());
 
@@ -109,9 +114,27 @@ export const contactNotification = async (
         }
 
         existingContact.notification = !existingContact.notification;
+
+        const conversation = await Conversation.findOne({ participants: { $all: [userObjectId, contactObjectId] } });
+
+        if (conversation) {
+            const newConversations = existingUser.conversations.map((chat) => {
+                if (String(chat.conversation) === String(conversation._id)) {
+                    chat.muted = !existingContact.notification;
+                }
+                return chat;
+            });
+            existingUser.conversations = newConversations;
+            existingUser.markModified('conversations');
+        }
+
         const contacts = existingUser.contacts.filter((contact) => contact.user.toString() !== contactObjectId.toString());
         existingUser.contacts = [...contacts, existingContact];
         existingUser.save();
+
+        if (conversation) {
+            io.emit('update-conversations', userId, contactId);
+        }
 
         return res.status(200).json({ user: existingUser });
     } catch (error) {

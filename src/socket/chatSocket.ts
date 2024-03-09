@@ -54,8 +54,8 @@ const chatSocket = (socket: Socket): void => {
 
         const roomIdentifier = chatId ? conversationIdString : generateRoomIdentifier(senderId, recipientId);
 
-        updateUsersConversations([senderId, recipientId], conversationId, recipientId);
         const newMessage = await saveMessages(message, senderId, recipientId, conversationId);
+        updateUsersConversations([senderId, recipientId], conversationId, recipientId, senderId);
 
         io.emit('notification', senderId, recipientId);
         io.to(roomIdentifier).emit('private message', newMessage);
