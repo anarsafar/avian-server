@@ -1,0 +1,1 @@
+{"version":3,"file":"reset.route.js","sourceRoot":"","sources":["../../../src/api/resetPassword/reset.route.ts"],"names":[],"mappings":";;;;;AAAA,sDAA0C;AAE1C,mDAAgD;AAChD,mDAAoD;AACpD,qDAAoD;AAEpD,MAAM,mBAAmB,GAAW,iBAAO,CAAC,MAAM,EAAE,CAAC;AAErD,mBAAmB,CAAC,KAAK,CAAC,GAAG,EAAE,IAAA,6BAAe,EAAC,EAAE,IAAI,EAAE,iCAAgB,EAAE,CAAC,EAAE,6BAAa,CAAC,CAAC;AAE3F,kBAAe,mBAAmB,CAAC"}

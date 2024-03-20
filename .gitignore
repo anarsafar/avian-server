@@ -72,6 +72,4 @@ typings/
 # Serverless directories
 .serverless
 
-dist
-
 db-data
