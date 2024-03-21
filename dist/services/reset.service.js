@@ -33,4 +33,3 @@ const resetPasswordService = async (password, confirmPassword, email) => {
     return result;
 };
 exports.default = resetPasswordService;
-//# sourceMappingURL=reset.service.js.map

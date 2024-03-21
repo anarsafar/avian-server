@@ -16,7 +16,7 @@ var EmailType;
 })(EmailType || (exports.EmailType = EmailType = {}));
 async function sendEmail(email, confirmationCode, type) {
     try {
-        const templatePath = path_1.default.join(__dirname, '../templates/', 'email.ejs');
+        const templatePath = path_1.default.join(__dirname, '../../templates/', 'email.ejs');
         const htmlContent = await ejs_1.default.renderFile(templatePath, { type, confirmationCode, date: Date.now() });
         mail_1.default.setApiKey(keys_1.config.sendGrid.sendGridKey);
         const mailOptions = {
@@ -33,4 +33,3 @@ async function sendEmail(email, confirmationCode, type) {
     }
 }
 exports.default = sendEmail;
-//# sourceMappingURL=sendEmail.service.js.map

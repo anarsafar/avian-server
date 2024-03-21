@@ -37,4 +37,3 @@ exports.ConfirmationBase = z.object({
 exports.ConfrimationValidate = exports.ConfirmationBase.extend({
     confirmationCode: z.string().refine((code) => /^[a-zA-Z0-9]{6}$/.test(code))
 });
-//# sourceMappingURL=confirmation.validate.js.map

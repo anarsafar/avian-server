@@ -14,4 +14,3 @@ async function isPassphraseUnique(passphrase, userId) {
     return !existingUser;
 }
 exports.default = isPassphraseUnique;
-//# sourceMappingURL=isPassphraseUnique.js.map

@@ -64,4 +64,3 @@ exports.PasswordValidate = exports.EmailValidate.extend({
     message: "Passwords don't match",
     path: ['confirmPassword']
 });
-//# sourceMappingURL=reset.validate.js.map

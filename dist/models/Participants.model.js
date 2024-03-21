@@ -47,4 +47,3 @@ exports.ParticipantSchema = new mongoose_1.Schema({
 });
 const Participant = (0, mongoose_1.model)('Participants', exports.ParticipantSchema);
 exports.default = Participant;
-//# sourceMappingURL=Participants.model.js.map

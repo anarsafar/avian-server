@@ -61,4 +61,3 @@ exports.UpdateUserValidate = z
         .optional()
 })
     .refine((data) => !isEmpty(data), { message: 'Body can not be empty' });
-//# sourceMappingURL=user.validate.js.map

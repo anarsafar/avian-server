@@ -16,4 +16,3 @@ const updateUserStatus = async (userId, status) => {
     await existingUser.save();
 };
 exports.default = updateUserStatus;
-//# sourceMappingURL=updateUserStatus.js.map

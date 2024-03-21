@@ -89,4 +89,3 @@ const blockOrDeleteContact = async (req, res, next) => {
     }
 };
 exports.blockOrDeleteContact = blockOrDeleteContact;
-//# sourceMappingURL=contacts.handler.js.map

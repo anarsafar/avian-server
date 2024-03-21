@@ -29,4 +29,3 @@ const cleanupBlacklist = async () => {
 };
 const scheduler = () => node_schedule_1.default.scheduleJob(`${keys_1.config.scheduleConfig}`, cleanupBlacklist);
 exports.scheduler = scheduler;
-//# sourceMappingURL=cleanup.service.js.map

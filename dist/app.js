@@ -64,4 +64,3 @@ app.use('/api/v1', api_1.default);
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 exports.default = app;
-//# sourceMappingURL=app.js.map

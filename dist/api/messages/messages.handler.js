@@ -59,4 +59,3 @@ const addMessage = async (req, res, next) => {
     }
 };
 exports.addMessage = addMessage;
-//# sourceMappingURL=messages.handler.js.map

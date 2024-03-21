@@ -30,4 +30,3 @@ const blacklisted = async (req, res, next) => {
     }
 };
 exports.default = blacklisted;
-//# sourceMappingURL=blacklist.middleware.js.map

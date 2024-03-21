@@ -17,4 +17,3 @@ const loginLimiter = (0, express_rate_limit_1.default)({
     legacyHeaders: false
 });
 exports.default = loginLimiter;
-//# sourceMappingURL=limiter.middleware.js.map

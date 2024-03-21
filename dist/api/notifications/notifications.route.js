@@ -15,4 +15,3 @@ notificationRoute.post('/profile', blacklist_middleware_1.default, jwt_middlewar
 notificationRoute.post('/contact/:contactId', blacklist_middleware_1.default, jwt_middleware_1.default, notifications_handler_1.contactNotification);
 notificationRoute.post('/:searchParam', (0, middlewares_1.validateRequest)({ body: notifications_validate_1.ValidateNotifaction }), notifications_handler_1.addNotification);
 exports.default = notificationRoute;
-//# sourceMappingURL=notifications.route.js.map

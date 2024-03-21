@@ -11,4 +11,3 @@ const conversationRoute = express_1.default.Router();
 conversationRoute.get('/', blacklist_middleware_1.default, jwt_middleware_1.default, conversation_handler_1.getConversations);
 conversationRoute.delete('/:conversationId', blacklist_middleware_1.default, jwt_middleware_1.default, conversation_handler_1.deleteConversation);
 exports.default = conversationRoute;
-//# sourceMappingURL=conversation.route.js.map

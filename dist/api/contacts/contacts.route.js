@@ -14,4 +14,3 @@ contactRoute.get('/', blacklist_middleware_1.default, jwt_middleware_1.default, 
 contactRoute.post('/', blacklist_middleware_1.default, jwt_middleware_1.default, (0, middlewares_1.validateRequest)({ body: contacts_valitate_1.ValidateContact }), contacts_handler_1.addContact);
 contactRoute.post('/:contactId', blacklist_middleware_1.default, jwt_middleware_1.default, (0, middlewares_1.validateRequest)({ body: contacts_valitate_1.ValidateAction }), contacts_handler_1.blockOrDeleteContact);
 exports.default = contactRoute;
-//# sourceMappingURL=contacts.route.js.map

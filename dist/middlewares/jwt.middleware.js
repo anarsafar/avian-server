@@ -29,4 +29,3 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 exports.default = authenticateToken;
-//# sourceMappingURL=jwt.middleware.js.map

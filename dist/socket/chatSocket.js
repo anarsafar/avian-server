@@ -47,4 +47,3 @@ const chatSocket = (socket) => {
     });
 };
 exports.default = chatSocket;
-//# sourceMappingURL=chatSocket.js.map

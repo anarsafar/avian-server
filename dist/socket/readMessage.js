@@ -36,4 +36,3 @@ const readMessage = (socket) => {
     });
 };
 exports.default = readMessage;
-//# sourceMappingURL=readMessage.js.map

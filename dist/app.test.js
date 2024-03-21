@@ -17,4 +17,3 @@ describe('app', () => {
         (0, supertest_1.default)(app_1.default).get('/what-is-this-even').set('Accept', 'application/json').expect('Content-Type', /json/).expect(404, done);
     });
 });
-//# sourceMappingURL=app.test.js.map

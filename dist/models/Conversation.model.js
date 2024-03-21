@@ -71,4 +71,3 @@ const ConversationSchema = new mongoose_1.Schema({
 });
 const Conversation = (0, mongoose_1.model)('Conversation', ConversationSchema);
 exports.default = Conversation;
-//# sourceMappingURL=Conversation.model.js.map

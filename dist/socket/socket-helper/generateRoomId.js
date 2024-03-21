@@ -5,4 +5,3 @@ const generateRoomIdentifier = (senderId, recipientId) => {
     return `${sortedUserIds[0]}-${sortedUserIds[1]}`;
 };
 exports.default = generateRoomIdentifier;
-//# sourceMappingURL=generateRoomId.js.map

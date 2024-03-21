@@ -43,4 +43,3 @@ const addToBlacklist = async (token, decodedTokenExp, type) => {
     }
 };
 exports.default = addToBlacklist;
-//# sourceMappingURL=blacklist.service.js.map

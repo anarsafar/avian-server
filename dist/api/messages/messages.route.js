@@ -13,4 +13,3 @@ const messagesRoute = express_1.default.Router();
 messagesRoute.get('/:conversationId', blacklist_middleware_1.default, jwt_middleware_1.default, messages_handler_1.getMessages);
 messagesRoute.post('/', blacklist_middleware_1.default, jwt_middleware_1.default, (0, middlewares_1.validateRequest)({ body: message_validate_1.ValidateMessage }), messages_handler_1.addMessage);
 exports.default = messagesRoute;
-//# sourceMappingURL=messages.route.js.map

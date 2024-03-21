@@ -12,4 +12,3 @@ describe('GET /api/v1', () => {
         }, done);
     });
 });
-//# sourceMappingURL=api.test.js.map

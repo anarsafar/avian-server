@@ -20,4 +20,3 @@ mongoose_1.default
     });
 })
     .catch((err) => console.error(err));
-//# sourceMappingURL=server.js.map

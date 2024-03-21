@@ -12,7 +12,7 @@ export enum EmailType {
 
 async function sendEmail(email: string, confirmationCode: string, type: EmailType): Promise<void> {
     try {
-        const templatePath: string = path.join(__dirname, '../templates/', 'email.ejs');
+        const templatePath: string = path.join(__dirname, '../../templates/', 'email.ejs');
         const htmlContent = await ejs.renderFile(templatePath, { type, confirmationCode, date: Date.now() });
 
         sgMail.setApiKey(config.sendGrid.sendGridKey);

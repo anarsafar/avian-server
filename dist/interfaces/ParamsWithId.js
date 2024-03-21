@@ -41,4 +41,3 @@ exports.ParamsWithId = z.object({
         message: 'Invalid ObjectId'
     })
 });
-//# sourceMappingURL=ParamsWithId.js.map

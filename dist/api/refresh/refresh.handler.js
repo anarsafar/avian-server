@@ -68,4 +68,3 @@ const refreshTokenHandler = async (req, res, next) => {
     }
 };
 exports.default = refreshTokenHandler;
-//# sourceMappingURL=refresh.handler.js.map

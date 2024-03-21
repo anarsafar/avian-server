@@ -6,4 +6,3 @@ const corsOptions = {
     credentials: true
 };
 exports.default = corsOptions;
-//# sourceMappingURL=cors.js.map

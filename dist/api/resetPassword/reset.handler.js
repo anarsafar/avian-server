@@ -16,4 +16,3 @@ const resetPassword = async (req, res, next) => {
     }
 };
 exports.resetPassword = resetPassword;
-//# sourceMappingURL=reset.handler.js.map

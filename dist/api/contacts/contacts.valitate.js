@@ -45,4 +45,3 @@ exports.ValidateContact = z.object({
 exports.ValidateAction = z.object({
     action: z.union([z.literal('block'), z.literal('delete')])
 });
-//# sourceMappingURL=contacts.valitate.js.map

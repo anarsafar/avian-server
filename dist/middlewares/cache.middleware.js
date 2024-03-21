@@ -11,4 +11,3 @@ const setCache = function (req, res, next) {
     next();
 };
 exports.default = setCache;
-//# sourceMappingURL=cache.middleware.js.map

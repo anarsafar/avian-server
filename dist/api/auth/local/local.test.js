@@ -42,4 +42,3 @@ describe('Testing the signUp route', () => {
         expect(response.body.error).toBe('Email already exists');
     });
 });
-//# sourceMappingURL=local.test.js.map

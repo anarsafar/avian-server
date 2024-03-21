@@ -14,4 +14,3 @@ const getMessagesAfterOffset = async (offset, conversation) => {
     }
 };
 exports.default = getMessagesAfterOffset;
-//# sourceMappingURL=getMessagesAfterOffset.js.map

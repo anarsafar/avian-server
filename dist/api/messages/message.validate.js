@@ -34,4 +34,3 @@ exports.ValidateMessage = z.object({
         timeStamp: z.string()
     })
 });
-//# sourceMappingURL=message.validate.js.map

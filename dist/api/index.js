@@ -31,4 +31,3 @@ router.use('/conversations', conversation_route_1.default);
 router.use('/messages', messages_route_1.default);
 router.use('/notifications', notifications_route_1.default);
 exports.default = router;
-//# sourceMappingURL=index.js.map

@@ -12,4 +12,3 @@ router.post('/', (0, middlewares_1.validateRequest)({ body: confirmation_validat
 router.post('/send-verification', (0, middlewares_1.validateRequest)({ body: confirmation_validate_1.ConfirmationBase }), confirmation_handler_1.sendVerification);
 router.post('/get-expiration', (0, middlewares_1.validateRequest)({ body: confirmation_validate_1.ConfirmationBase }), confirmation_handler_1.getExpiration);
 exports.default = router;
-//# sourceMappingURL=confirmation.route.js.map

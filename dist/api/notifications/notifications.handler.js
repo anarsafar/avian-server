@@ -109,4 +109,3 @@ const contactNotification = async (req, res, next) => {
     }
 };
 exports.contactNotification = contactNotification;
-//# sourceMappingURL=notifications.handler.js.map

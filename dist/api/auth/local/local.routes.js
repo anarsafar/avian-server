@@ -38,4 +38,3 @@ localAuthRouter.post('/login', limiter_middleware_1.default, (0, middlewares_1.v
 localAuthRouter.post('/logout', blacklist_middleware_1.default, localAuthHandler.logOut);
 localAuthRouter.post('/delivered', localAuthHandler.delivered);
 exports.default = localAuthRouter;
-//# sourceMappingURL=local.routes.js.map

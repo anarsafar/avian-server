@@ -40,4 +40,3 @@ const updateUsersConversations = async (userIds, conversationId, recipientId, se
     }
 };
 exports.default = updateUsersConversations;
-//# sourceMappingURL=updateUser.js.map

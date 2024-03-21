@@ -31,4 +31,3 @@ const saveMessages = async (message, senderId, recipientId, conversationId) => {
     return newMessage;
 };
 exports.default = saveMessages;
-//# sourceMappingURL=saveMessages.js.map

@@ -36,4 +36,3 @@ exports.ValidateNotifaction = z.object({
         .optional(),
     browserInfo: z.string()
 });
-//# sourceMappingURL=notifications.validate.js.map

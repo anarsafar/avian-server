@@ -17,4 +17,3 @@ const joinChat = (socket) => {
     });
 };
 exports.default = joinChat;
-//# sourceMappingURL=joinChat.js.map

@@ -29,4 +29,3 @@ const uploadImage = (req, res, next) => {
     });
 };
 exports.default = uploadImage;
-//# sourceMappingURL=upload.middleware.js.map

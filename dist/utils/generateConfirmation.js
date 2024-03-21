@@ -15,4 +15,3 @@ function generateConfirmation(length) {
     return result;
 }
 exports.default = generateConfirmation;
-//# sourceMappingURL=generateConfirmation.js.map

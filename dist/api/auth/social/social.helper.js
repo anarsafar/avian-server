@@ -62,4 +62,3 @@ const callbackHelper = async (user, err, res, next) => {
     res.redirect(`${keys_1.config.applicationURLs.frontendURL}/auth/signin?accessToken=${accessToken}&id=${user.authInfo.providerId}`);
 };
 exports.callbackHelper = callbackHelper;
-//# sourceMappingURL=social.helper.js.map

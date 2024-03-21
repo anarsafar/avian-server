@@ -14,4 +14,3 @@ userRoute.patch('/', blacklist_middleware_1.default, jwt_middleware_1.default, u
 userRoute.delete('/', blacklist_middleware_1.default, jwt_middleware_1.default, user_handler_1.deleteUser);
 userRoute.delete('/delete-avatar', blacklist_middleware_1.default, jwt_middleware_1.default, user_handler_1.deleteAvatar);
 exports.default = userRoute;
-//# sourceMappingURL=user.route.js.map

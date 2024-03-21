@@ -29,4 +29,3 @@ const githubStrategy = new passport_github2_1.Strategy({
 });
 const strategies = { googleStrategy, facebookStrategy, githubStrategy };
 exports.default = strategies;
-//# sourceMappingURL=social.strategies.js.map

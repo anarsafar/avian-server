@@ -16,4 +16,3 @@ const blacklistSchema = new mongoose_1.Schema({
 blacklistSchema.index({ expiration: 1 });
 const BlacklistToken = (0, mongoose_1.model)('BlacklistToken', blacklistSchema);
 exports.default = BlacklistToken;
-//# sourceMappingURL=Blacklist.model.js.map

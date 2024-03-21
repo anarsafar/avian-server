@@ -56,4 +56,3 @@ exports.SignupValidate = exports.LoginValidate.extend({
     message: "Passwords don't match",
     path: ['confirmPassword']
 });
-//# sourceMappingURL=local.validate.js.map

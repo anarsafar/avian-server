@@ -30,4 +30,3 @@ const verifyAccess = (header, socket) => {
     }
 };
 exports.default = verifyAccess;
-//# sourceMappingURL=verifyAccess.js.map

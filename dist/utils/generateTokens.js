@@ -32,4 +32,3 @@ const generateRefreshToken = (id) => {
     });
 };
 exports.generateRefreshToken = generateRefreshToken;
-//# sourceMappingURL=generateTokens.js.map

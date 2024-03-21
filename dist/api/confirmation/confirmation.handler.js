@@ -120,4 +120,3 @@ const getExpiration = async (req, res, next) => {
     }
 };
 exports.getExpiration = getExpiration;
-//# sourceMappingURL=confirmation.handler.js.map

@@ -26,4 +26,3 @@ socialRoute.get('/github/callback', (req, res, next) => {
     })(req, res);
 });
 exports.default = socialRoute;
-//# sourceMappingURL=social.route.js.map

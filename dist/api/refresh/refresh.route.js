@@ -8,4 +8,3 @@ const refresh_handler_1 = __importDefault(require("./refresh.handler"));
 const refreshRouter = express_1.default.Router();
 refreshRouter.post('/', refresh_handler_1.default);
 exports.default = refreshRouter;
-//# sourceMappingURL=refresh.route.js.map

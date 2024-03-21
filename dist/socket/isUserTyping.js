@@ -9,4 +9,3 @@ function isUserTyping(socket) {
     });
 }
 exports.default = isUserTyping;
-//# sourceMappingURL=isUserTyping.js.map

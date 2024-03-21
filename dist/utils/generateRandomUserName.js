@@ -12,4 +12,3 @@ function generateRandumUserName(name) {
     return userName;
 }
 exports.default = generateRandumUserName;
-//# sourceMappingURL=generateRandomUserName.js.map

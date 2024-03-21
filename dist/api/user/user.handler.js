@@ -120,4 +120,3 @@ const deleteAvatar = async (req, res, next) => {
     }
 };
 exports.deleteAvatar = deleteAvatar;
-//# sourceMappingURL=user.handler.js.map
