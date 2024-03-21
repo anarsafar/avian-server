@@ -80,7 +80,8 @@ export const logIn = async (req: Request<{}, { accessToken: string } | GeneralEr
         const accessToken = await generateAccessToken(existingUser._id);
         const refreshToken = await generateRefreshToken(existingUser._id);
 
-        res.setHeader('Set-Cookie', [`refreshToken=${refreshToken}; HttpOnly; Secure; Max-Age=${7 * 24 * 60 * 60 * 1000}; SameSite=None; Path=/; Partitioned`]);
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/' });
+
         res.status(200).json({ accessToken });
     } catch (error) {
         next(error);
@@ -110,7 +111,12 @@ export const logOut = async (req: Request, res: Response<MessageResponse | Gener
         }
 
         try {
-            res.setHeader('Set-Cookie', [`refreshToken=; HttpOnly; Secure; Max-Age=0; SameSite=None; Path=/; Partitioned`]);
+            res.clearCookie('refreshToken', {
+                path: '/',
+                expires: new Date(0),
+                sameSite: 'none',
+                secure: true
+            });
         } catch (error) {
             return res.status(500).json({ error: 'Error clearing refresh token cookie' });
         }
