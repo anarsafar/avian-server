@@ -58,8 +58,7 @@ export const callbackHelper = async (user: any, err: Error, res: Response | any,
     const accessToken = await generateAccessToken(user._id);
     const refreshToken = await generateRefreshToken(user._id);
 
-    // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/' }); // 7 days
-    res.setHeader('Set-Cookie', [`refreshToken=${refreshToken}; HttpOnly; Secure; Max-Age=${7 * 24 * 60 * 60 * 1000}; SameSite=None; Path=/; Partitioned`]);
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/', partitioned: true });
 
     res.redirect(`${config.applicationURLs.frontendURL}/auth/signin?accessToken=${accessToken}&id=${user.authInfo.providerId}`);
 };
