@@ -80,7 +80,7 @@ export const logIn = async (req: Request<{}, { accessToken: string } | GeneralEr
         const accessToken = await generateAccessToken(existingUser._id);
         const refreshToken = await generateRefreshToken(existingUser._id);
 
-        res.cookie('refreshToken', refreshToken, { secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/' });
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/', domain: '.vercel.app' });
 
         res.status(200).json({ accessToken });
     } catch (error) {
@@ -115,7 +115,8 @@ export const logOut = async (req: Request, res: Response<MessageResponse | Gener
                 path: '/',
                 expires: new Date(0),
                 sameSite: 'none',
-                secure: true
+                secure: true,
+                domain: '.vercel.app'
             });
         } catch (error) {
             return res.status(500).json({ error: 'Error clearing refresh token cookie' });
