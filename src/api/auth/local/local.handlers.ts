@@ -113,10 +113,10 @@ export const logOut = async (req: Request, res: Response<MessageResponse | Gener
         try {
             res.clearCookie('refreshToken', {
                 path: '/',
+                httpOnly: true,
                 expires: new Date(0),
                 sameSite: 'none',
-                secure: true,
-                domain: '.vercel.app'
+                secure: true
             });
         } catch (error) {
             return res.status(500).json({ error: 'Error clearing refresh token cookie' });
