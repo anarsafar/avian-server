@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pingSchedule = void 0;
 const node_schedule_1 = __importDefault(require("node-schedule"));
-const http_1 = __importDefault(require("http"));
+const https_1 = __importDefault(require("https"));
 const keys_1 = require("../config/keys");
 exports.pingSchedule = node_schedule_1.default.scheduleJob('*/10 * * * *', function () {
     const options = {
@@ -14,7 +14,7 @@ exports.pingSchedule = node_schedule_1.default.scheduleJob('*/10 * * * *', funct
         path: '/',
         method: 'GET'
     };
-    const req = http_1.default.request(options, (res) => {
+    const req = https_1.default.request(options, (res) => {
         console.log(`Ping response: ${res.statusCode}`);
     });
     req.on('error', (error) => {
