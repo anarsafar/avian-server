@@ -57,7 +57,7 @@ const callbackHelper = async (user, err, res, next) => {
     }
     const accessToken = await (0, generateTokens_1.generateAccessToken)(user._id);
     const refreshToken = await (0, generateTokens_1.generateRefreshToken)(user._id);
-    res.cookie('refreshToken', refreshToken, { secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'none', path: '/', domain: '.vercel.app' });
     res.redirect(`${keys_1.config.applicationURLs.frontendURL}/auth/signin?accessToken=${accessToken}&id=${user.authInfo.providerId}`);
 };
 exports.callbackHelper = callbackHelper;
