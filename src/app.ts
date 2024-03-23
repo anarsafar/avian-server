@@ -13,6 +13,8 @@ import * as middlewares from './middlewares';
 import api from './api';
 import strategies from './api/auth/social/social.strategies';
 import corsOptions from './config/cors';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { pingSchedule } from './cron';
 // import setCache from './middlewares/cache.middleware';
 
 const app = express();
