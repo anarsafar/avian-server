@@ -4,7 +4,7 @@
     "description": "A modern Node.js Express API for a real-time chat application. This API is equipped with JWT authentication, social login capabilities using Passport.js, and data validation powered by Zod.   It seamlessly integrates WebSocket support for instant, interactive communication between users.",
     "main": "src/server.ts",
     "scripts": {
-        "start": "ts-node src/server.ts",
+        "start": "node dist/server.js",
         "dev": "nodemon src/server.ts",
         "build": "tsc",
         "lint": "eslint --fix src/",
